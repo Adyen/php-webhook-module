@@ -6,7 +6,6 @@
     }
   ],
   "description": "Processes notification for Adyen Payment Plugins",
-  "minimum-stability": "stable",
   "license": "MIT",
   "autoload": {
     "psr-4": {
