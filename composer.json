@@ -5,7 +5,7 @@
       "name": "Adyen"
     }
   ],
-  "description": "Processes notification for Adyen Payment Plugins",
+  "description": "Webhook module for Adyen Payment Plugins",
   "license": "MIT",
   "autoload": {
     "psr-4": {
