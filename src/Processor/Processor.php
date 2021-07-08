@@ -59,7 +59,7 @@ abstract class Processor implements ProcessorInterface
         $this->paymentState = $paymentState;
     }
 
-    public function getTransitionState(): string
+    public function getTransitionState(): ?string
     {
         return $this->transitionState;
     }
