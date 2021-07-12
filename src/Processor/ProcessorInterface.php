@@ -25,6 +25,5 @@ namespace Adyen\Webhook\Processor;
 
 interface ProcessorInterface
 {
-    public function process(): void;
-    public function getTransitionState(): ?string;
+    public function process(): ?string;
 }

@@ -25,7 +25,7 @@ namespace Adyen\Webhook\Processor;
 
 class DefaultProcessor extends Processor implements ProcessorInterface
 {
-    public function process(): void
+    public function process(): ?string
     {
         // For event codes that are not listed in Adyen\Webhook\EventCodes, we do nothing.
         if ($this->logger) {
@@ -33,5 +33,7 @@ class DefaultProcessor extends Processor implements ProcessorInterface
                 'Processed ' . $this->notification->getEventCode() . ' notification. No action taken.'
             );
         }
+
+        return null;
     }
 }

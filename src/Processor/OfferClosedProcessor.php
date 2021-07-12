@@ -28,19 +28,21 @@ use Adyen\Webhook\PaymentStates;
 
 class OfferClosedProcessor extends Processor implements ProcessorInterface
 {
-    public function process(): void
+    public function process(): ?string
     {
-        $state = $this->paymentState;
+        $state = $this->initialState;
         $logContext = [
             'eventCode' => EventCodes::OFFER_CLOSED,
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::STATE_IN_PROGRESS) {
-            $this->setTransitionState(PaymentStates::STATE_FAILED);
+        if ($this->notification->isSuccess() && PaymentStates::STATE_IN_PROGRESS === $state) {
+            $state = PaymentStates::STATE_FAILED;
         }
-        $logContext['newState'] = $this->transitionState;
+        $logContext['newState'] = $state;
 
         $this->log('info', 'Processed ' . EventCodes::OFFER_CLOSED . ' notification.', $logContext);
+
+        return $state;
     }
 }

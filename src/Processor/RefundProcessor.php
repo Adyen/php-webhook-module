@@ -28,19 +28,21 @@ use Adyen\Webhook\PaymentStates;
 
 class RefundProcessor extends Processor implements ProcessorInterface
 {
-    public function process(): void
+    public function process(): ?string
     {
-        $state = $this->paymentState;
+        $state = $this->initialState;
         $logContext = [
             'eventCode' => EventCodes::REFUND,
             'originalState' => $state
         ];
 
         if ($this->notification->isSuccess()) {
-            $this->setTransitionState(PaymentStates::STATE_REFUNDED);
+            $state = PaymentStates::STATE_REFUNDED;
         }
-        $logContext['newState'] = $this->transitionState;
+        $logContext['newState'] = $state;
 
-        $this->logger->info('Processed ' . EventCodes::REFUND . ' notification.', $logContext);
+        $this->log('info', 'Processed ' . EventCodes::REFUND . ' notification.', $logContext);
+
+        return $state;
     }
 }

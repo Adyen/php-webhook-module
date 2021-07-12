@@ -29,25 +29,27 @@ use Adyen\Webhook\PaymentStates;
 
 class AuthorisationProcessor extends Processor implements ProcessorInterface
 {
-    public function process(): void
+    public function process(): ?string
     {
-        $state = $this->paymentState;
+        $state = $this->initialState;
         $logContext = [
             'eventCode' => EventCodes::AUTHORISATION,
             'originalState' => $state
         ];
 
         if ($this->notification->isSuccess()) {
-            if ($state !== PaymentStates::STATE_PAID) {
-                $this->setTransitionState(PaymentStates::STATE_PAID);
+            if (PaymentStates::STATE_PAID !== $state) {
+                $state = PaymentStates::STATE_PAID;
             }
         } else {
-            if ($state === PaymentStates::STATE_IN_PROGRESS) {
-                $this->setTransitionState(PaymentStates::STATE_FAILED);
+            if (PaymentStates::STATE_IN_PROGRESS === $state) {
+                $state = PaymentStates::STATE_FAILED;
             }
         }
-        $logContext['newState'] = $this->transitionState;
+        $logContext['newState'] = $state;
 
         $this->log('info', 'Processed ' . EventCodes::AUTHORISATION . ' notification.', $logContext);
+
+        return $state;
     }
 }

@@ -38,35 +38,20 @@ abstract class Processor implements ProcessorInterface
     /**
      * @var string
      */
-    protected $paymentState;
+    protected $initialState;
 
-    /**
-     * @var null|string
-     */
-    protected $transitionState;
+    abstract public function process(): ?string;
 
-    abstract public function process(): void;
-
-    public function __construct(Notification $notification, string $paymentState)
+    public function __construct(Notification $notification, string $state)
     {
         $this->notification = $notification;
 
         $paymentStatesClass = new \ReflectionClass(PaymentStates::class);
-        if (!in_array($paymentState, $paymentStatesClass->getConstants())) {
-            $this->log('error', 'Attempted to set an invalid state.', ['state' => $paymentState]);
+        if (!in_array($state, $paymentStatesClass->getConstants())) {
+            $this->log('error', 'Attempted to set an invalid state.', ['state' => $state]);
             throw new \Exception('Invalid state.');
         }
-        $this->paymentState = $paymentState;
-    }
-
-    public function getTransitionState(): ?string
-    {
-        return $this->transitionState;
-    }
-
-    protected function setTransitionState(string $state)
-    {
-        $this->transitionState = $state;
+        $this->initialState = $state;
     }
 
     protected function log($level, $message, array $context = [])
