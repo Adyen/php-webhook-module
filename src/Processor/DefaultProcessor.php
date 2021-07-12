@@ -30,7 +30,7 @@ class DefaultProcessor extends Processor implements ProcessorInterface
         // For event codes that are not listed in Adyen\Webhook\EventCodes, we do nothing.
         if ($this->logger) {
             $this->logger->info(
-                'Processed ' . $this->notification->getEventCode() . ' notification. No action taken.'
+                'Unimplemented notification event. No action taken.'
             );
         }
 

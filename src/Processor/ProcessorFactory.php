@@ -24,6 +24,7 @@
 namespace Adyen\Webhook\Processor;
 
 use Adyen\Webhook\EventCodes;
+use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
 use Psr\Log\LoggerInterface;
 
@@ -36,7 +37,7 @@ class ProcessorFactory
     ];
 
     /**
-     * @throws \Exception
+     * @throws InvalidDataException
      */
     public static function create(
         Notification $notification,

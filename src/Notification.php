@@ -31,7 +31,7 @@ class Notification
     public $success;
 
     /**
-     * @throws \Exception
+     * @throws InvalidDataException
      */
     public static function createItem(array $notificationData): Notification
     {
