@@ -23,6 +23,8 @@
 
 namespace Adyen\Webhook;
 
+use Adyen\Webhook\Exception\InvalidDataException;
+
 class Notification
 {
     public $eventCode;
@@ -56,14 +58,24 @@ class Notification
         $class_vars = get_class_vars(self::class);
 
         $missing = [];
+        $invalid = [];
+        $eventCodes = new \ReflectionClass(EventCodes::class);
+
         foreach ($class_vars as $property => $value) {
             if (!isset($data[$property])) {
                 $missing[] = $property;
             }
+            if (isset($data['eventCode']) && !in_array($data['eventCode'], $eventCodes->getConstants())) {
+                $invalid[] = 'eventCode';
+            }
         }
 
         if (!empty($missing)) {
-            throw new \Exception('Fields missing from notification data: '. join(', ', $missing));
+            throw new InvalidDataException('Field(s) missing from notification data: ' . join(', ', $missing));
+        }
+
+        if (!empty($invalid)) {
+            throw new InvalidDataException('Invalid value for the field(s): ' . join($invalid));
         }
     }
 }

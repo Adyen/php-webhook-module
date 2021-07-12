@@ -5,7 +5,7 @@
       "name": "Adyen"
     }
   ],
-  "description": "Webhook module for Adyen Payment Plugins",
+  "description": "Webhook module for Adyen Payment Integrations",
   "license": "MIT",
   "autoload": {
     "psr-4": {
@@ -14,7 +14,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Adyen\\Webhook\\Test\\": "tests"
+      "Adyen\\Webhook\\Test\\": "tests/"
     }
   },
   "require": {
