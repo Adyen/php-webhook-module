@@ -36,7 +36,7 @@ abstract class Processor implements ProcessorInterface
      * @var Notification
      */
     protected $notification;
-    
+
     /**
      * @var string
      */
