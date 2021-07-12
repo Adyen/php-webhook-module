@@ -24,6 +24,7 @@
 namespace Adyen\Webhook\Receiver;
 
 use Adyen\AdyenException;
+use Adyen\Webhook\Exception\HMACKeyValidationException;
 use Adyen\Webhook\Exception\InvalidDataException;
 
 class HmacSignature
@@ -39,12 +40,12 @@ class HmacSignature
     {
         // validate if hmacKey is provided
         if (empty($hmacKey)) {
-            throw new InvalidDataException("You did not provide a HMAC key");
+            throw new HMACKeyValidationException("You did not provide a HMAC key");
         }
 
         // validate if hmacKey contains only hexadecimal chars to be packed with H*
         if (!ctype_xdigit($hmacKey)) {
-            throw new InvalidDataException("Invalid HMAC key: $hmacKey");
+            throw new HMACKeyValidationException("Invalid HMAC key: $hmacKey");
         }
 
         if (empty($params)) {
@@ -93,6 +94,7 @@ class HmacSignature
      * @param array $params
      * @return bool
      * @throws InvalidDataException
+     * @throws HMACKeyValidationException
      */
     public function isValidNotificationHMAC($hmacKey, $params)
     {
