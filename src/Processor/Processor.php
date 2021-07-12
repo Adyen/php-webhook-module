@@ -23,6 +23,7 @@
 
 namespace Adyen\Webhook\Processor;
 
+use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
 use Adyen\Webhook\PaymentStates;
 use Psr\Log\LoggerAwareTrait;
@@ -35,6 +36,7 @@ abstract class Processor implements ProcessorInterface
      * @var Notification
      */
     protected $notification;
+    
     /**
      * @var string
      */
@@ -45,12 +47,8 @@ abstract class Processor implements ProcessorInterface
     public function __construct(Notification $notification, string $state)
     {
         $this->notification = $notification;
+        $this->validateState($state);
 
-        $paymentStatesClass = new \ReflectionClass(PaymentStates::class);
-        if (!in_array($state, $paymentStatesClass->getConstants())) {
-            $this->log('error', 'Attempted to set an invalid state.', ['state' => $state]);
-            throw new \Exception('Invalid state.');
-        }
         $this->initialState = $state;
     }
 
@@ -58,6 +56,14 @@ abstract class Processor implements ProcessorInterface
     {
         if ($this->logger) {
             $this->logger->log($level, $message, $context);
+        }
+    }
+
+    protected function validateState($state) {
+        $paymentStatesClass = new \ReflectionClass(PaymentStates::class);
+        if (!in_array($state, $paymentStatesClass->getConstants())) {
+            $this->log('error', 'Attempted to set an invalid state.', ['state' => $state]);
+            throw new InvalidDataException('Invalid state.');
         }
     }
 }
