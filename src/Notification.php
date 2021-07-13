@@ -54,7 +54,8 @@ class Notification
         return in_array($this->success, [true, "true"]);
     }
 
-    private static function validateNotificationData(array $data) {
+    private static function validateNotificationData(array $data)
+    {
         $class_vars = get_class_vars(self::class);
 
         $missing = [];

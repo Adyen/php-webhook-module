@@ -103,8 +103,12 @@ class ProcessorFactoryTest extends TestCase
     {
         return [
             [
-                [], ['error' => true, 'errorMessage' => 'Field(s) missing from notification data: eventCode, success'],
-                ['eventCode' => 'foobar', 'success' => true], ['error' => true, 'errorMessage' => 'Invalid value for the field(s): eventCode']
+                [],
+                ['error' => true, 'errorMessage' => 'Field(s) missing from notification data: eventCode, success'],
+            ],
+            [
+                ['eventCode' => 'foobar', 'success' => true],
+                ['error' => true, 'errorMessage' => 'Invalid value for the field(s): eventCode']
             ]
         ];
     }

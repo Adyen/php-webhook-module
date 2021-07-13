@@ -59,7 +59,8 @@ abstract class Processor implements ProcessorInterface
         }
     }
 
-    protected function validateState($state) {
+    protected function validateState($state)
+    {
         $paymentStatesClass = new \ReflectionClass(PaymentStates::class);
         if (!in_array($state, $paymentStatesClass->getConstants())) {
             $this->log('error', 'Attempted to set an invalid state.', ['state' => $state]);

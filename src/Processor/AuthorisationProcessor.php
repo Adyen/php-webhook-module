@@ -23,7 +23,6 @@
 
 namespace Adyen\Webhook\Processor;
 
-
 use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
 
