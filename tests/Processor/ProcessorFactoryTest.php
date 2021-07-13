@@ -26,7 +26,6 @@ namespace Adyen\Webhook\Test\Processor;
 use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
 use Adyen\Webhook\Processor\AuthorisationProcessor;
-use Adyen\Webhook\Processor\DefaultProcessor;
 use Adyen\Webhook\Processor\OfferClosedProcessor;
 use Adyen\Webhook\Processor\ProcessorFactory;
 use Adyen\Webhook\Processor\RefundProcessor;
@@ -53,17 +52,6 @@ class ProcessorFactoryTest extends TestCase
             $this->expectErrorMessage($result['errorMessage']);
         }
         Notification::createItem($notificationData);
-    }
-
-    public function testCreateUnimplementedProcessor()
-    {
-        $notification = $this->createNotificationSuccess([
-            'eventCode' => 'foobar',
-            'success' => 'true',
-        ]);
-        $processor = ProcessorFactory::create($notification, 'paid');
-
-        $this->assertInstanceOf(DefaultProcessor::class, $processor);
     }
 
     public function testCreateAuthorisationProcessor()
