@@ -33,7 +33,7 @@ use PHPUnit\Framework\TestCase;
 
 class ProcessorFactoryTest extends TestCase
 {
-    public function createNotificationSuccess($notificationData): Notification
+    private function createNotificationSuccess($notificationData): Notification
     {
         $notificationItem = Notification::createItem($notificationData);
 

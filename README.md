@@ -3,13 +3,13 @@
 Adyen library for handling notification webhooks.
 
 ## Installation
-You can use [Composer](https://getcomposer.org/). Follow the [installation instructions](https://getcomposer.org/doc/00-intro.md) if you do not already have composer installed.
+You can use [Composer](https://getcomposer.org/). Follow the [installation instructions](https://getcomposer.org/doc/00-intro.md) if you do not already have Composer installed.
 
 ~~~~ bash
 composer require adyen/php-webhook-module
 ~~~~
 
-In your PHP script, make sure you include the autoloader:
+In your PHP script, make sure to include the autoloader:
 
 ~~~~ php
 require __DIR__ . '/vendor/autoload.php';
