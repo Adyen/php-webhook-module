@@ -1,0 +1,31 @@
+on: ["push", "pull_request"]
+name: Main Workflow
+
+jobs:
+  run:
+    name: Run
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHP Code Sniffer
+        run: vendor/bin/phpcs .
+
+      - name: Run tests
+        run: vendor/bin/phpunit --bootstrap tests/bootstrap.php --configuration phpunit.xml tests
+
+      - name: Make sure project files are compilable
+        run: find -L . -path ./vendor -prune -o -path ./tests -prune -o -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
