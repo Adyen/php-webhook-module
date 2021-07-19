@@ -21,7 +21,7 @@
  *
  */
 
-namespace Adyen\Webhook\Test\Processor;
+namespace Adyen\Webhook\Test\Unit\Processor;
 
 use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
