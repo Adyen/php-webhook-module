@@ -27,6 +27,10 @@ use Adyen\Webhook\Exception\InvalidDataException;
 
 class Notification
 {
+    const REQUIRED_DATA = [
+        'eventCode'
+    ];
+
     public $eventCode;
     public $success;
 
@@ -39,7 +43,9 @@ class Notification
 
         $notification = new self();
         $notification->eventCode = $notificationData['eventCode'];
-        $notification->success = $notificationData['success'];
+        if (array_key_exists('success', $notificationData)) {
+            $notification->success = $notificationData['success'];
+        }
 
         return $notification;
     }
@@ -56,13 +62,11 @@ class Notification
 
     private static function validateNotificationData(array $data)
     {
-        $class_vars = get_class_vars(self::class);
-
         $missing = [];
         $invalid = [];
         $eventCodes = new \ReflectionClass(EventCodes::class);
 
-        foreach ($class_vars as $property => $value) {
+        foreach (self::REQUIRED_DATA as $property) {
             if (!isset($data[$property])) {
                 $missing[] = $property;
             }
