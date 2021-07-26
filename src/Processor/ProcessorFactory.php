@@ -34,6 +34,7 @@ class ProcessorFactory
         EventCodes::AUTHORISATION => AuthorisationProcessor::class,
         EventCodes::OFFER_CLOSED => OfferClosedProcessor::class,
         EventCodes::REFUND => RefundProcessor::class,
+        EventCodes::REFUND_FAILED => RefundFailedProcessor::class
     ];
 
     /**

@@ -21,12 +21,25 @@
  *
  */
 
-namespace Adyen\Webhook;
+namespace Adyen\Webhook\Processor;
 
-final class EventCodes
+use Adyen\Webhook\EventCodes;
+use Adyen\Webhook\PaymentStates;
+
+class RefundFailedProcessor extends Processor implements ProcessorInterface
 {
-    public const AUTHORISATION = 'AUTHORISATION';
-    public const OFFER_CLOSED = 'OFFER_CLOSED';
-    public const REFUND = 'REFUND';
-    public const REFUND_FAILED = 'REFUND_FAILED';
+    public function process(): ?string
+    {
+        $logContext = [
+            'eventCode' => EventCodes::REFUND_FAILED,
+            'originalState' => $this->initialState
+        ];
+
+        $state = PaymentStates::STATE_REFUND_CARD_SCHEME_FAILED;
+        $logContext['newState'] = $state;
+
+        $this->log('info', 'Processed ' . EventCodes::REFUND_FAILED . ' notification.', $logContext);
+
+        return $state;
+    }
 }

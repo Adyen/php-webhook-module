@@ -30,4 +30,5 @@ final class PaymentStates
     public const STATE_FAILED = 'failed';
     public const STATE_REFUNDED = 'refunded';
     public const STATE_PARTIALLY_REFUNDED = 'partially_refunded';
+    public const STATE_REFUND_CARD_SCHEME_FAILED = 'refund_card_scheme_failed';
 }
