@@ -30,12 +30,16 @@ class RefundFailedProcessor extends Processor implements ProcessorInterface
 {
     public function process(): ?string
     {
+        $state = $this->initialState;
         $logContext = [
             'eventCode' => EventCodes::REFUND_FAILED,
-            'originalState' => $this->initialState
+            'originalState' => $state
         ];
 
-        $state = PaymentStates::STATE_REFUND_CARD_SCHEME_FAILED;
+        if ($state === PaymentStates::STATE_REFUNDED) {
+            $state = PaymentStates::STATE_REFUND_CARD_SCHEME_FAILED;
+        }
+
         $logContext['newState'] = $state;
 
         $this->log('info', 'Processed ' . EventCodes::REFUND_FAILED . ' notification.', $logContext);

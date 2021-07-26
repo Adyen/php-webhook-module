@@ -28,6 +28,7 @@ use Adyen\Webhook\Notification;
 use Adyen\Webhook\Processor\AuthorisationProcessor;
 use Adyen\Webhook\Processor\OfferClosedProcessor;
 use Adyen\Webhook\Processor\ProcessorFactory;
+use Adyen\Webhook\Processor\RefundFailedProcessor;
 use Adyen\Webhook\Processor\RefundProcessor;
 use PHPUnit\Framework\TestCase;
 
@@ -87,12 +88,22 @@ class ProcessorFactoryTest extends TestCase
         $this->assertInstanceOf(RefundProcessor::class, $processor);
     }
 
+    public function testCreateRefundFailedProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+            'eventCode' => 'REFUND_FAILED',
+        ]);
+        $processor = ProcessorFactory::create($notification, 'refunded');
+
+        $this->assertInstanceOf(RefundFailedProcessor::class, $processor);
+    }
+
     public static function invalidNotificationData(): array
     {
         return [
             [
                 [],
-                ['error' => true, 'errorMessage' => 'Field(s) missing from notification data: eventCode, success'],
+                ['error' => true, 'errorMessage' => 'Field(s) missing from notification data: eventCode'],
             ],
             [
                 ['eventCode' => 'foobar', 'success' => true],
