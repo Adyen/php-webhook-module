@@ -92,6 +92,7 @@ class ProcessorFactoryTest extends TestCase
     {
         $notification = $this->createNotificationSuccess([
             'eventCode' => 'REFUND_FAILED',
+            'success' => 'true',
         ]);
         $processor = ProcessorFactory::create($notification, 'refunded');
 
@@ -103,7 +104,7 @@ class ProcessorFactoryTest extends TestCase
         return [
             [
                 [],
-                ['error' => true, 'errorMessage' => 'Field(s) missing from notification data: eventCode'],
+                ['error' => true, 'errorMessage' => 'Field(s) missing from notification data: eventCode, success'],
             ],
             [
                 ['eventCode' => 'foobar', 'success' => true],

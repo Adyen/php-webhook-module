@@ -30,8 +30,9 @@ class Notification
     const PROPERTY_EVENT_CODE = 'eventCode';
     const PROPERTY_SUCCESS = 'success';
 
-    const REQUIRED_DATA = [
-        self::PROPERTY_EVENT_CODE
+    const REQUIRED_PROPERTIES = [
+        self::PROPERTY_EVENT_CODE,
+        self::PROPERTY_SUCCESS
     ];
 
     public $eventCode;
@@ -46,9 +47,7 @@ class Notification
 
         $notification = new self();
         $notification->eventCode = $notificationData[self::PROPERTY_EVENT_CODE];
-        if (array_key_exists(self::PROPERTY_SUCCESS, $notificationData)) {
-            $notification->success = $notificationData[self::PROPERTY_SUCCESS];
-        }
+        $notification->success = $notificationData[self::PROPERTY_SUCCESS];
 
         return $notification;
     }
@@ -69,7 +68,7 @@ class Notification
         $invalid = [];
         $eventCodes = new \ReflectionClass(EventCodes::class);
 
-        foreach (self::REQUIRED_DATA as $property) {
+        foreach (self::REQUIRED_PROPERTIES as $property) {
             // If required data is missing
             if (!isset($data[$property])) {
                 $missing[] = $property;
