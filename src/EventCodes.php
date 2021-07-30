@@ -28,4 +28,5 @@ final class EventCodes
     public const AUTHORISATION = 'AUTHORISATION';
     public const OFFER_CLOSED = 'OFFER_CLOSED';
     public const REFUND = 'REFUND';
+    public const REFUND_FAILED = 'REFUND_FAILED';
 }
