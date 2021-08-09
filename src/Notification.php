@@ -86,7 +86,7 @@ class Notification
         }
 
         if (!empty($invalid)) {
-            throw new InvalidDataException('Invalid value for the field(s): ' . join($invalid));
+            throw new InvalidDataException('Invalid value for the field(s) with key(s): ' . join(', ', $invalid));
         }
     }
 }
