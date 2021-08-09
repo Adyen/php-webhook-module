@@ -27,6 +27,14 @@ use Adyen\Webhook\Exception\InvalidDataException;
 
 class Notification
 {
+    const PROPERTY_EVENT_CODE = 'eventCode';
+    const PROPERTY_SUCCESS = 'success';
+
+    const REQUIRED_PROPERTIES = [
+        self::PROPERTY_EVENT_CODE,
+        self::PROPERTY_SUCCESS
+    ];
+
     public $eventCode;
     public $success;
 
@@ -38,8 +46,8 @@ class Notification
         self::validateNotificationData($notificationData);
 
         $notification = new self();
-        $notification->eventCode = $notificationData['eventCode'];
-        $notification->success = $notificationData['success'];
+        $notification->eventCode = $notificationData[self::PROPERTY_EVENT_CODE];
+        $notification->success = $notificationData[self::PROPERTY_SUCCESS];
 
         return $notification;
     }
@@ -56,18 +64,20 @@ class Notification
 
     private static function validateNotificationData(array $data)
     {
-        $class_vars = get_class_vars(self::class);
-
         $missing = [];
         $invalid = [];
         $eventCodes = new \ReflectionClass(EventCodes::class);
 
-        foreach ($class_vars as $property => $value) {
+        foreach (self::REQUIRED_PROPERTIES as $property) {
+            // If required data is missing
             if (!isset($data[$property])) {
                 $missing[] = $property;
             }
-            if (isset($data['eventCode']) && !in_array($data['eventCode'], $eventCodes->getConstants())) {
-                $invalid[] = 'eventCode';
+
+            // If an invalid event code is passed
+            if (isset($data[self::PROPERTY_EVENT_CODE]) &&
+                !in_array($data[self::PROPERTY_EVENT_CODE], $eventCodes->getConstants())) {
+                $invalid[] = self::PROPERTY_EVENT_CODE;
             }
         }
 
@@ -76,7 +86,7 @@ class Notification
         }
 
         if (!empty($invalid)) {
-            throw new InvalidDataException('Invalid value for the field(s): ' . join($invalid));
+            throw new InvalidDataException('Invalid value for the field(s) with key(s): ' . join(', ', $invalid));
         }
     }
 }

@@ -28,6 +28,7 @@ use Adyen\Webhook\Notification;
 use Adyen\Webhook\Processor\AuthorisationProcessor;
 use Adyen\Webhook\Processor\OfferClosedProcessor;
 use Adyen\Webhook\Processor\ProcessorFactory;
+use Adyen\Webhook\Processor\RefundFailedProcessor;
 use Adyen\Webhook\Processor\RefundProcessor;
 use PHPUnit\Framework\TestCase;
 
@@ -87,6 +88,17 @@ class ProcessorFactoryTest extends TestCase
         $this->assertInstanceOf(RefundProcessor::class, $processor);
     }
 
+    public function testCreateRefundFailedProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+            'eventCode' => 'REFUND_FAILED',
+            'success' => 'true',
+        ]);
+        $processor = ProcessorFactory::create($notification, 'refunded');
+
+        $this->assertInstanceOf(RefundFailedProcessor::class, $processor);
+    }
+
     public static function invalidNotificationData(): array
     {
         return [
@@ -96,7 +108,7 @@ class ProcessorFactoryTest extends TestCase
             ],
             [
                 ['eventCode' => 'foobar', 'success' => true],
-                ['error' => true, 'errorMessage' => 'Invalid value for the field(s): eventCode']
+                ['error' => true, 'errorMessage' => 'Invalid value for the field(s) with key(s): eventCode']
             ]
         ];
     }
