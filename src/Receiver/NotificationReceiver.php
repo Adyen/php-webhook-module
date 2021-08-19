@@ -56,7 +56,7 @@ class NotificationReceiver
      */
     public function validateHmac($response, $hmacKey)
     {
-        $isTestNotification = $this->isTestNotification($response['pspReference']);
+        $isTestNotification = $this->isTestNotification($response['pspReference'] ?? '');
         if (!$this->hmacSignature->isValidNotificationHMAC($hmacKey, $response)) {
             if ($isTestNotification) {
                 $message = 'HMAC key validation failed';
@@ -138,6 +138,10 @@ class NotificationReceiver
      */
     public function isTestNotification($pspReference)
     {
+        if(!is_string($pspReference)){
+            return false;
+        }
+
         if (strpos(strtolower($pspReference), 'test_') !== false
             || strpos(strtolower($pspReference), 'testnotification_') !== false
         ) {
