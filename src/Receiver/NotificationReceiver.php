@@ -138,7 +138,7 @@ class NotificationReceiver
      */
     public function isTestNotification($pspReference)
     {
-        if(!is_string($pspReference)){
+        if (!is_string($pspReference)) {
             return false;
         }
 
