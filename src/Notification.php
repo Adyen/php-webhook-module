@@ -59,7 +59,7 @@ class Notification
 
     public function isSuccess(): bool
     {
-        return in_array($this->success, [true, "true"]);
+        return in_array($this->success, [true, "true"], true);
     }
 
     private static function validateNotificationData(array $data)
