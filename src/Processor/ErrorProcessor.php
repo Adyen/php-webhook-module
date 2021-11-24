@@ -47,4 +47,3 @@ class ErrorProcessor extends Processor implements ProcessorInterface
         return $state;
     }
 }
-

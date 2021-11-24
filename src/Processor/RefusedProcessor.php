@@ -47,4 +47,3 @@ class RefusedProcessor extends Processor implements ProcessorInterface
         return $state;
     }
 }
-
