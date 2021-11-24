@@ -21,30 +21,29 @@
  *
  */
 
-namespace Adyen\Webhook;
+namespace Adyen\Webhook\Processor;
 
-final class EventCodes
+use Adyen\Webhook\EventCodes;
+use Adyen\Webhook\PaymentStates;
+
+class CaptureProcessor extends Processor implements ProcessorInterface
 {
-    const AUTHORISATION = 'AUTHORISATION';
-    const PENDING = 'PENDING';
-    const AUTHORISED = 'AUTHORISED';
-    const RECEIVED = 'RECEIVED';
-    const CANCELLED = 'CANCELLED';
-    const REFUSED = 'REFUSED';
-    const ERROR = 'ERROR';
-    const REFUND = 'REFUND';
-    const REFUND_FAILED = 'REFUND_FAILED';
-    const CANCEL_OR_REFUND = 'CANCEL_OR_REFUND';
-    const CAPTURE = 'CAPTURE';
-    const CAPTURE_FAILED = 'CAPTURE_FAILED';
-    const CANCELLATION = 'CANCELLATION';
-    const POS_APPROVED = 'POS_APPROVED';
-    const HANDLED_EXTERNALLY = 'HANDLED_EXTERNALLY';
-    const MANUAL_REVIEW_ACCEPT = 'MANUAL_REVIEW_ACCEPT';
-    const MANUAL_REVIEW_REJECT = 'MANUAL_REVIEW_REJECT';
-    const RECURRING_CONTRACT = "RECURRING_CONTRACT";
-    const REPORT_AVAILABLE = "REPORT_AVAILABLE";
-    const ORDER_CLOSED = "ORDER_CLOSED";
-    const OFFER_CLOSED = "OFFER_CLOSED";
-    //const MAX_ERROR_COUNT = 5;
+    public function process(): ?string
+    {
+        $state = $this->initialState;
+        $logContext = [
+            'eventCode' => EventCodes::AUTHORISED,
+            'originalState' => $state
+        ];
+
+        if ($this->notification->isSuccess() && $state === PaymentStates::AUTHORISED) {
+            $state = PaymentStates::AUTHORISED;
+        }
+
+        $logContext['newState'] = $state;
+
+        $this->log('info', 'Processed ' . EventCodes::CAPTURE . ' notification.', $logContext);
+
+        return $state;
+    }
 }

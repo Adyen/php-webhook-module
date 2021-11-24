@@ -23,6 +23,8 @@
 
 namespace Adyen\Webhook\Processor;
 
+use Adyen\Service\ResourceModel\Modification\CancelOrRefund;
+use Adyen\Service\ResourceModel\Modification\Capture;
 use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
@@ -34,8 +36,26 @@ class ProcessorFactory
         EventCodes::AUTHORISATION => AuthorisationProcessor::class,
         EventCodes::OFFER_CLOSED => OfferClosedProcessor::class,
         EventCodes::REFUND => RefundProcessor::class,
-        EventCodes::REFUND_FAILED => RefundFailedProcessor::class
+        EventCodes::REFUND_FAILED => RefundFailedProcessor::class,
+        EventCodes::PENDING => PendingProcessor::class,
+        EventCodes::AUTHORISED => AuthorisedProcessor::class,
+        EventCodes::RECEIVED => ReceivedProcessor::class,
+        EventCodes::CANCELLED => CanceledProcessor::class,
+        EventCodes::REFUSED => RefusedProcessor::class,
+        EventCodes::ERROR => ErrorProcessor::class,
+        EventCodes::CANCEL_OR_REFUND => CancelOrRefundProcessor::class,
+        EventCodes::CAPTURE => CaptureProcessor::class,
+        EventCodes::CAPTURE_FAILED => CaptureFailedProcessor::class,
+        EventCodes::CANCELLATION => CancelationProcessor::class,
+        EventCodes::POS_APPROVED => PosApprovedProcessor::class,
+        EventCodes::HANDLED_EXTERNALLY => HandledExternallyProcessor::class,
+        EventCodes::MANUAL_REVIEW_ACCEPT => ManualReviewAcceptProcessor::class,
+        EventCodes::MANUAL_REVIEW_REJECT => ManualReviewRejectProcessor::class,
+        EventCodes::RECURRING_CONTRACT => RecurringContractProcessor::class,
+        EventCodes::REPORT_AVAILABLE => ReportAvailableProcessor::class,
+        EventCodes::ORDER_CLOSED => OrderClosedProcessor::class
     ];
+
 
     /**
      * @throws InvalidDataException
