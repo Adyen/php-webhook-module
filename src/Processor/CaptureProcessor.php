@@ -32,7 +32,7 @@ class CaptureProcessor extends Processor implements ProcessorInterface
     {
         $state = $this->initialState;
         $logContext = [
-            'eventCode' => EventCodes::AUTHORISED,
+            'eventCode' => EventCodes::CAPTURE,
             'originalState' => $state
         ];
 

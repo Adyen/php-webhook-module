@@ -32,7 +32,7 @@ class ReceivedProcessor extends Processor implements ProcessorInterface
     {
         $state = $this->initialState;
         $logContext = [
-            'eventCode' => EventCodes::AUTHORISED,
+            'eventCode' => EventCodes::RECEIVED,
             'originalState' => $state
         ];
 
