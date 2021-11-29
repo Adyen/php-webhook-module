@@ -37,7 +37,8 @@ class CapturedFailedProcessor extends Processor implements ProcessorInterface
         ];
 
         if ($this->notification->isSuccess()) {
-            if ($state == PaymentStates::STATE_NEW || $state == PaymentStates::STATE_PAYMENT_REVIEW || $state == PaymentStates::STATE_PROCESSING) {
+            if ($state == PaymentStates::STATE_NEW || $state == PaymentStates::STATE_PAYMENT_REVIEW
+                || $state == PaymentStates::STATE_PROCESSING) {
                 $state = PaymentStates::STATE_CANCELED;
             }
         }
