@@ -36,8 +36,8 @@ class CaptureProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::AUTHORISED) {
-            $state = PaymentStates::AUTHORISED;
+        if ($this->notification->isSuccess() && $state === PaymentStates::STATE_CAPTURE) {
+            $state = PaymentStates::STATE_CAPTURE;
         }
 
         $logContext['newState'] = $state;

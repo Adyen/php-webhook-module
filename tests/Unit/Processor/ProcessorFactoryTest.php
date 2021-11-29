@@ -28,14 +28,25 @@ use Adyen\Webhook\Notification;
 use Adyen\Webhook\PaymentStates;
 use Adyen\Webhook\Processor\AuthorisationProcessor;
 use Adyen\Webhook\Processor\AuthorisedProcessor;
-use Adyen\Webhook\Processor\OfferClosedProcessor;
-use Adyen\Webhook\Processor\ProcessorFactory;
-use Adyen\Webhook\Processor\RefundFailedProcessor;
-use Adyen\Webhook\Processor\RefundProcessor;
 use Adyen\Webhook\Processor\CancelationProcessor;
 use Adyen\Webhook\Processor\CanceledProcessor;
 use Adyen\Webhook\Processor\CancelOrRefundProcessor;
 use Adyen\Webhook\Processor\CaptureFailedProcessor;
+use Adyen\Webhook\Processor\CaptureProcessor;
+use Adyen\Webhook\Processor\ErrorProcessor;
+use Adyen\Webhook\Processor\HandledExternallyProcessor;
+use Adyen\Webhook\Processor\ManualReviewRejectProcessor;
+use Adyen\Webhook\Processor\OfferClosedProcessor;
+use Adyen\Webhook\Processor\OrderClosedProcessor;
+use Adyen\Webhook\Processor\PendingProcessor;
+use Adyen\Webhook\Processor\ProcessorFactory;
+use Adyen\Webhook\Processor\ReceivedProcessor;
+use Adyen\Webhook\Processor\RecurringContractProcessor;
+use Adyen\Webhook\Processor\RefundFailedProcessor;
+use Adyen\Webhook\Processor\RefundProcessor;
+
+
+use Adyen\Webhook\Processor\ReportAvailableProcessor;
 use PHPUnit\Framework\TestCase;
 
 class ProcessorFactoryTest extends TestCase
@@ -167,6 +178,105 @@ class ProcessorFactoryTest extends TestCase
         $processor = ProcessorFactory::create($notification, 'in_progress');
 
         $this->assertInstanceOf(CaptureFailedProcessor::class, $processor);
+    }
+
+    public function testCreateCaptureProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => 'CAPTURE',
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+
+        $this->assertInstanceOf(CaptureProcessor::class, $processor);
+    }
+
+    public function testErrorProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => 'ERROR',
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+
+        $this->assertInstanceOf(ErrorProcessor::class, $processor);
+    }
+
+    public function testHandledExternallyProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => 'HANDLED_EXTERNALLY',
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+
+        $this->assertInstanceOf(HandledExternallyProcessor::class, $processor);
+    }
+
+    public function testManualReviewRejectProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => 'MANUAL_REVIEW_REJECT',
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+
+        $this->assertInstanceOf(ManualReviewRejectProcessor::class, $processor);
+    }
+
+    public function testOrderClosedProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => 'ORDER_CLOSED',
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+
+        $this->assertInstanceOf(OrderClosedProcessor::class, $processor);
+    }
+
+    public function testPendingProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => 'PENDING',
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+
+        $this->assertInstanceOf(PendingProcessor::class, $processor);
+    }
+
+    public function testReceivedProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => 'RECEIVED',
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+
+        $this->assertInstanceOf(ReceivedProcessor::class, $processor);
+    }
+
+    public function testRecurringContractProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => 'RECURRING_CONTRACT',
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+
+        $this->assertInstanceOf(RecurringContractProcessor::class, $processor);
+    }
+
+    public function testReportAvailableProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => 'REPORT_AVAILABLE',
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+
+        $this->assertInstanceOf(ReportAvailableProcessor::class, $processor);
     }
 
     public static function invalidNotificationData(): array

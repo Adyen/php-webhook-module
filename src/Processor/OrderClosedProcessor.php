@@ -36,8 +36,8 @@ class OrderClosedProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::AUTHORISED) {
-            $state = PaymentStates::AUTHORISED;
+        if ($this->notification->isSuccess() && $state === PaymentStates::STATE_PAYMENT_REVIEW) {
+            $state = PaymentStates::STATE_NEW;
         }
 
         $logContext['newState'] = $state;

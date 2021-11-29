@@ -36,10 +36,6 @@ class ReceivedProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::AUTHORISED) {
-            $state = PaymentStates::AUTHORISED;
-        }
-
         $logContext['newState'] = $state;
 
         $this->log('info', 'Processed ' . EventCodes::RECEIVED . ' notification.', $logContext);

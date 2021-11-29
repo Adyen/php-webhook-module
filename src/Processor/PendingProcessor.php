@@ -36,10 +36,6 @@ class PendingProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::PENDING) {
-            $state = PaymentStates::PENDING;
-        }
-
         $logContext['newState'] = $state;
 
         $this->log('info', 'Processed ' . EventCodes::PENDING . ' notification.', $logContext);

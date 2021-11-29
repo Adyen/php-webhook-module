@@ -36,10 +36,6 @@ class ManualReviewAcceptProcessor extends Processor implements ProcessorInterfac
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::AUTHORISED) {
-            $state = PaymentStates::AUTHORISED;
-        }
-
         $logContext['newState'] = $state;
 
         $this->log('info', 'Processed ' . EventCodes::MANUAL_REVIEW_ACCEPT . ' notification.', $logContext);
