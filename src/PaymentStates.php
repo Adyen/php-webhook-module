@@ -31,4 +31,5 @@ final class PaymentStates
     public const STATE_REFUNDED = 'refunded';
     public const STATE_PARTIALLY_REFUNDED = 'partially_refunded';
     public const STATE_REFUND_FAILED = 'refund_failed';
+    public const STATE_CANCELED = 'canceled';
 }

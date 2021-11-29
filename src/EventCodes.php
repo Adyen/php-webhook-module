@@ -29,7 +29,7 @@ final class EventCodes
     const PENDING = 'PENDING';
     const AUTHORISED = 'AUTHORISED';
     const RECEIVED = 'RECEIVED';
-    const CANCELLED = 'CANCELLED';
+    const CANCELLED = 'CANCELED';
     const REFUSED = 'REFUSED';
     const ERROR = 'ERROR';
     const REFUND = 'REFUND';
@@ -46,5 +46,5 @@ final class EventCodes
     const REPORT_AVAILABLE = "REPORT_AVAILABLE";
     const ORDER_CLOSED = "ORDER_CLOSED";
     const OFFER_CLOSED = "OFFER_CLOSED";
-    //const MAX_ERROR_COUNT = 5;
+    const MAX_ERROR_COUNT = 5;
 }

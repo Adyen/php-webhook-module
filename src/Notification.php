@@ -29,6 +29,7 @@ class Notification
 {
     const PROPERTY_EVENT_CODE = 'eventCode';
     const PROPERTY_SUCCESS = 'success';
+    const ADDITIONAL_DATA ='additionalData';
 
     const REQUIRED_PROPERTIES = [
         self::PROPERTY_EVENT_CODE,
@@ -37,6 +38,7 @@ class Notification
 
     public $eventCode;
     public $success;
+    public $additionalData;
 
     /**
      * @throws InvalidDataException
@@ -48,6 +50,10 @@ class Notification
         $notification = new self();
         $notification->eventCode = $notificationData[self::PROPERTY_EVENT_CODE];
         $notification->success = $notificationData[self::PROPERTY_SUCCESS];
+
+        if (isset($notificationData[self::ADDITIONAL_DATA])) {
+            $notification->additionalData = $notificationData[self::ADDITIONAL_DATA];
+        }
 
         return $notification;
     }

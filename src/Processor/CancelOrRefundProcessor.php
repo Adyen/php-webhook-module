@@ -28,6 +28,10 @@ use Adyen\Webhook\PaymentStates;
 
 class CancelOrRefundProcessor extends Processor implements ProcessorInterface
 {
+    const MODIFICATION_ACTION = 'modification.action';
+    const CANCEL = 'cancel';
+    const REFUND = 'refund';
+
     public function process(): ?string
     {
         $state = $this->initialState;
@@ -36,8 +40,12 @@ class CancelOrRefundProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::AUTHORISED) {
-            $state = PaymentStates::AUTHORISED;
+        if ($this->notification->isSuccess() && isset($this->notification->additionalData[self::MODIFICATION_ACTION])) {
+            if ($this->notification->additionalData[self::MODIFICATION_ACTION] == self::CANCEL) {
+                $state = PaymentStates::STATE_CANCELED;
+            } elseif ($this->notification->additionalData[self::MODIFICATION_ACTION] == self::REFUND) {
+                $state = PaymentStates::STATE_REFUNDED;
+            }
         }
 
         $logContext['newState'] = $state;

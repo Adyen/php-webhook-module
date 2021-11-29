@@ -32,12 +32,12 @@ class CanceledProcessor extends Processor implements ProcessorInterface
     {
         $state = $this->initialState;
         $logContext = [
-            'eventCode' => EventCodes::CANCELLED,
+            'eventCode' => EventCodes::CANCELED,
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::AUTHORISED) {
-            $state = PaymentStates::AUTHORISED;
+        if ($this->notification->isSuccess() && PaymentStates::STATE_IN_PROGRESS === $state) {
+            $state = PaymentStates::STATE_CANCELED;
         }
 
         $logContext['newState'] = $state;

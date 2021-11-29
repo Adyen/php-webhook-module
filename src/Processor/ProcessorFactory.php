@@ -33,7 +33,7 @@ use Psr\Log\LoggerInterface;
 class ProcessorFactory
 {
     private static $adyenEventCodeProcessors = [
-        EventCodes::AUTHORISATION => AuthorisationProcessor::class,
+        EventCodes::AUTHORISATION => AuthorisationProcessor::class,//ok
         EventCodes::OFFER_CLOSED => OfferClosedProcessor::class,
         EventCodes::REFUND => RefundProcessor::class,
         EventCodes::REFUND_FAILED => RefundFailedProcessor::class,

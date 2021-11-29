@@ -35,6 +35,16 @@ class OfferClosedProcessor extends Processor implements ProcessorInterface
             'eventCode' => EventCodes::OFFER_CLOSED,
             'originalState' => $state
         ];
+        if ($this->notification->isSuccess() && PaymentStates::STATE_CANCELED === $state) {
+            $this->_adyenLogger->addAdyenNotificationCronjob(
+                "Order is already cancelled, skipping OFFER_CLOSED"
+            );
+        }
+        if ($this->notification->isSuccess() && PaymentStates::AUTHORISED === $state) {
+            $this->_adyenLogger->addAdyenNotificationCronjob(
+                "Order is already cancelled, skipping OFFER_CLOSED"
+            );
+        }
 
         if ($this->notification->isSuccess() && PaymentStates::STATE_IN_PROGRESS === $state) {
             $state = PaymentStates::STATE_FAILED;

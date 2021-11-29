@@ -35,11 +35,7 @@ class AuthorisedProcessor extends Processor implements ProcessorInterface
             'eventCode' => EventCodes::AUTHORISED,
             'originalState' => $state
         ];
-
-        if ($this->notification->isSuccess() && $state === PaymentStates::AUTHORISED) {
-            $state = PaymentStates::AUTHORISED;
-        }
-
+        //Do nothing wait for the notification
         $logContext['newState'] = $state;
 
         $this->log('info', 'Processed ' . EventCodes::AUTHORISED . ' notification.', $logContext);
