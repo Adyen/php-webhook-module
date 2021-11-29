@@ -36,6 +36,10 @@ class ErrorProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
+        if ($this->notification->isSuccess()) {
+            $state = PaymentStates::STATE_FAILED;
+        }
+
         $logContext['newState'] = $state;
 
         $this->log('info', 'Processed ' . EventCodes::ERROR . ' notification.', $logContext);

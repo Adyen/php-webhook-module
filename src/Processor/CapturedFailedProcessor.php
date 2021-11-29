@@ -26,7 +26,7 @@ namespace Adyen\Webhook\Processor;
 use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
 
-class CaptureFailedProcessor extends Processor implements ProcessorInterface
+class CapturedFailedProcessor extends Processor implements ProcessorInterface
 {
     public function process(): ?string
     {
@@ -36,8 +36,10 @@ class CaptureFailedProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && PaymentStates::STATE_IN_PROGRESS === $state) {
-            $state = PaymentStates::STATE_CANCELED;
+        if ($this->notification->isSuccess()) {
+            if ($state == PaymentStates::STATE_NEW || $state == PaymentStates::STATE_PAYMENT_REVIEW || $state == PaymentStates::STATE_PROCESSING) {
+                $state = PaymentStates::STATE_CANCELED;
+            }
         }
 
         $logContext['newState'] = $state;

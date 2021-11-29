@@ -31,7 +31,7 @@ use Adyen\Webhook\Processor\AuthorisedProcessor;
 use Adyen\Webhook\Processor\CancelationProcessor;
 use Adyen\Webhook\Processor\CanceledProcessor;
 use Adyen\Webhook\Processor\CancelOrRefundProcessor;
-use Adyen\Webhook\Processor\CaptureFailedProcessor;
+use Adyen\Webhook\Processor\CapturedFailedProcessor;
 use Adyen\Webhook\Processor\CaptureProcessor;
 use Adyen\Webhook\Processor\ErrorProcessor;
 use Adyen\Webhook\Processor\HandledExternallyProcessor;
@@ -177,7 +177,7 @@ class ProcessorFactoryTest extends TestCase
                                                          ]);
         $processor = ProcessorFactory::create($notification, 'in_progress');
 
-        $this->assertInstanceOf(CaptureFailedProcessor::class, $processor);
+        $this->assertInstanceOf(CapturedFailedProcessor::class, $processor);
     }
 
     public function testCreateCaptureProcessor()

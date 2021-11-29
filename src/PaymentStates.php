@@ -37,4 +37,5 @@ final class PaymentStates
     public const STATE_CANCELED = 'canceled';
     const STATE_PAYMENT_REVIEW = 'payment_review';
     const STATE_NEW = 'new';
+    const STATE_PROCESSING = 'progressing';
 }

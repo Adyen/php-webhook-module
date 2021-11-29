@@ -24,7 +24,6 @@
 namespace Adyen\Webhook\Processor;
 
 use Adyen\Webhook\EventCodes;
-use Adyen\Webhook\PaymentStates;
 
 class RecurringContractProcessor extends Processor implements ProcessorInterface
 {
@@ -35,10 +34,6 @@ class RecurringContractProcessor extends Processor implements ProcessorInterface
             'eventCode' => EventCodes::RECURRING_CONTRACT,
             'originalState' => $state
         ];
-
-        if ($this->notification->isSuccess() && $state === PaymentStates::AUTHORISED) {
-            $state = PaymentStates::AUTHORISED;
-        }
 
         $logContext['newState'] = $state;
 

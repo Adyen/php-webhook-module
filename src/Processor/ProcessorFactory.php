@@ -45,7 +45,7 @@ class ProcessorFactory
         EventCodes::ERROR => ErrorProcessor::class,
         EventCodes::CANCEL_OR_REFUND => CancelOrRefundProcessor::class,
         EventCodes::CAPTURE => CaptureProcessor::class,
-        EventCodes::CAPTURE_FAILED => CaptureFailedProcessor::class,
+        EventCodes::CAPTURE_FAILED => CapturedFailedProcessor::class,
         EventCodes::CANCELLATION => CancelationProcessor::class,
         EventCodes::HANDLED_EXTERNALLY => HandledExternallyProcessor::class,
         EventCodes::MANUAL_REVIEW_ACCEPT => ManualReviewAcceptProcessor::class,
