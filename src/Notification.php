@@ -51,7 +51,7 @@ class Notification
         $notification->eventCode = $notificationData[self::PROPERTY_EVENT_CODE];
         $notification->success = $notificationData[self::PROPERTY_SUCCESS];
 
-        if (isset($notificationData[self::ADDITIONAL_DATA])) {
+        if (isset($notificationData[self::ADDITIONAL_DATA])&& is_array($notificationData[self::ADDITIONAL_DATA])) {
             $notification->additionalData = $notificationData[self::ADDITIONAL_DATA];
         }
 
