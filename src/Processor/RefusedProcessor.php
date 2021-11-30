@@ -37,7 +37,7 @@ class RefusedProcessor extends Processor implements ProcessorInterface
         ];
 
         if ($this->notification->isSuccess()) {
-            $state = PaymentStates::STATE_CANCELED;
+            $state = PaymentStates::STATE_CANCELLED;
         }
 
         $logContext['newState'] = $state;

@@ -28,8 +28,8 @@ use Adyen\Webhook\Notification;
 use Adyen\Webhook\PaymentStates;
 use Adyen\Webhook\Processor\AuthorisationProcessor;
 use Adyen\Webhook\Processor\AuthorisedProcessor;
-use Adyen\Webhook\Processor\CancelationProcessor;
-use Adyen\Webhook\Processor\CanceledProcessor;
+use Adyen\Webhook\Processor\CancellationProcessor;
+use Adyen\Webhook\Processor\CancelledProcessor;
 use Adyen\Webhook\Processor\CancelOrRefundProcessor;
 use Adyen\Webhook\Processor\CapturedFailedProcessor;
 use Adyen\Webhook\Processor\CaptureProcessor;
@@ -47,19 +47,9 @@ use Adyen\Webhook\Processor\RefundProcessor;
 
 
 use Adyen\Webhook\Processor\ReportAvailableProcessor;
-use PHPUnit\Framework\TestCase;
 
 class ProcessorFactoryTest extends TestCase
 {
-    private function createNotificationSuccess($notificationData): Notification
-    {
-        $notificationItem = Notification::createItem($notificationData);
-
-        $this->assertInstanceOf(Notification::class, $notificationItem);
-
-        return $notificationItem;
-    }
-
     /**
      * @dataProvider invalidNotificationData
      */
@@ -135,18 +125,18 @@ class ProcessorFactoryTest extends TestCase
                                                          ]);
         $processor = ProcessorFactory::create($notification, 'in_progress');
 
-        $this->assertInstanceOf(CancelationProcessor::class, $processor);
+        $this->assertInstanceOf(CancellationProcessor::class, $processor);
     }
 
     public function testCreateCanceledProcessor()
     {
         $notification = $this->createNotificationSuccess([
-                                                             'eventCode' => 'CANCELED',
+                                                             'eventCode' => 'CANCELLED',
                                                              'success' => 'true',
                                                          ]);
         $processor = ProcessorFactory::create($notification, 'in_progress');
 
-        $this->assertInstanceOf(CanceledProcessor::class, $processor);
+        $this->assertInstanceOf(CancelledProcessor::class, $processor);
     }
 
     /**
@@ -163,7 +153,7 @@ class ProcessorFactoryTest extends TestCase
 
         $this->assertInstanceOf(CancelOrRefundProcessor::class, $processor);
         $result = $processor->process($notification);
-        $this->assertEquals(PaymentStates::STATE_CANCELED, $result);
+        $this->assertEquals(PaymentStates::STATE_CANCELLED, $result);
         $notification->additionalData = array('modification.action'=>'refund');
         $result = $processor->process($notification);
         $this->assertEquals(PaymentStates::STATE_REFUNDED, $result);

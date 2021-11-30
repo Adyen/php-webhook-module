@@ -38,7 +38,7 @@ class ManualReviewRejectProcessor extends Processor implements ProcessorInterfac
 
         if ($this->notification->isSuccess()) {
             if ($state == PaymentStates::STATE_NEW || $state == PaymentStates::STATE_PAYMENT_REVIEW) {
-                $state = PaymentStates::STATE_CANCELED;
+                $state = PaymentStates::STATE_CANCELLED;
             }
         }
         $logContext['newState'] = $state;

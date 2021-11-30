@@ -29,7 +29,7 @@ final class EventCodes
     const PENDING = 'PENDING';
     const AUTHORISED = 'AUTHORISED';
     const RECEIVED = 'RECEIVED';
-    const CANCELLED = 'CANCELED';
+    const CANCELLED = 'CANCELLED';
     const REFUSED = 'REFUSED';
     const ERROR = 'ERROR';
     const REFUND = 'REFUND';
