@@ -26,6 +26,7 @@ namespace Adyen\Webhook;
 final class PaymentStates
 {
     public const STATE_IN_PROGRESS = 'in_progress';
+    public const STATE_PENDING = 'pending';
     public const STATE_PAID = 'paid';
     public const STATE_FAILED = 'failed';
     public const STATE_REFUNDED = 'refunded';

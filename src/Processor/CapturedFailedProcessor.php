@@ -36,12 +36,6 @@ class CapturedFailedProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess()
-            && ($state == PaymentStates::STATE_NEW || $state == PaymentStates::STATE_PAYMENT_REVIEW
-                || $state == PaymentStates::STATE_PROCESSING)) {
-            $state = PaymentStates::STATE_CANCELLED;
-        }
-
         $logContext['newState'] = $state;
 
         $this->log('info', 'Processed ' . EventCodes::CAPTURE_FAILED . ' notification.', $logContext);

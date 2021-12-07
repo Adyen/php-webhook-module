@@ -37,7 +37,7 @@ class RefundFailedProcessor extends Processor implements ProcessorInterface
         ];
 
         if ($this->notification->isSuccess() && $state === PaymentStates::STATE_REFUNDED) {
-            $state = PaymentStates::STATE_REFUND_FAILED;
+            $state = PaymentStates::STATE_PAID;
         }
 
         $logContext['newState'] = $state;

@@ -36,10 +36,12 @@ class CancellationProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess()
-            && ($state == PaymentStates::STATE_NEW || $state == PaymentStates::STATE_PAYMENT_REVIEW
-                || $state == PaymentStates::STATE_PROCESSING)) {
+        if ($this->notification->isSuccess()) {
+            if ($state == PaymentStates::STATE_NEW
+                || $state == PaymentStates::STATE_PENDING
+                || $state == PaymentStates::STATE_PROCESSING) {
                 $state = PaymentStates::STATE_CANCELLED;
+            }
         }
 
         $logContext['newState'] = $state;

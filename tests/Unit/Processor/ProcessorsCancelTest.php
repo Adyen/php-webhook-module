@@ -52,16 +52,4 @@ class ProcessorsCancelTest extends TestCase
 
         $this->assertEquals(PaymentStates::STATE_CANCELLED, $newState);
     }
-
-    public function testCapturedFailedProcessor()
-    {
-        $notification = $this->createNotificationSuccess([
-                                                             'eventCode' => EventCodes::CAPTURE_FAILED,
-                                                             'success' => 'true',
-                                                         ]);
-        $processor = ProcessorFactory::create($notification, PaymentStates::STATE_NEW);
-        $newState = $processor->process();
-
-        $this->assertEquals(PaymentStates::STATE_CANCELLED, $newState);
-    }
 }

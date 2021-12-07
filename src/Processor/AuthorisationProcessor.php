@@ -37,11 +37,16 @@ class AuthorisationProcessor extends Processor implements ProcessorInterface
         ];
 
         if ($this->notification->isSuccess()) {
-            if (PaymentStates::STATE_PAID !== $state) {
+            if (PaymentStates::STATE_NEW == $state
+                || PaymentStates::STATE_IN_PROGRESS === $state
+                || PaymentStates::STATE_PENDING === $state) {
                 $state = PaymentStates::STATE_PAID;
             }
         } else {
-            if (PaymentStates::STATE_IN_PROGRESS === $state) {
+            if (PaymentStates::STATE_NEW == $state
+                || PaymentStates::STATE_IN_PROGRESS === $state
+                || PaymentStates::STATE_PENDING === $state
+                ||PaymentStates::STATE_PAID === $state) {
                 $state = PaymentStates::STATE_FAILED;
             }
         }

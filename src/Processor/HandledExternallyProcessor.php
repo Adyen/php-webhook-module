@@ -35,10 +35,6 @@ class HandledExternallyProcessor extends Processor implements ProcessorInterface
             'eventCode' => EventCodes::HANDLED_EXTERNALLY,
             'originalState' => $state
         ];
-        //Same with Authorisation
-        if ($this->notification->isSuccess() && $state == PaymentStates::STATE_NEW) {
-            $state = PaymentStates::STATE_IN_PROGRESS;
-        }
 
         $logContext['newState'] = $state;
 
