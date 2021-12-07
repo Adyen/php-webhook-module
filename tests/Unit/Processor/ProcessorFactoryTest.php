@@ -147,15 +147,9 @@ class ProcessorFactoryTest extends TestCase
                                                              'eventCode' => 'CANCEL_OR_REFUND',
                                                              'success' => 'true',
                                                          ]);
-        $notification->additionalData = array('modification.action'=>'cancel');
         $processor = ProcessorFactory::create($notification, 'in_progress');
 
         $this->assertInstanceOf(CancelOrRefundProcessor::class, $processor);
-        $result = $processor->process($notification);
-        $this->assertEquals(PaymentStates::STATE_CANCELLED, $result);
-        $notification->additionalData = array('modification.action'=>'refund');
-        $result = $processor->process($notification);
-        $this->assertEquals(PaymentStates::STATE_REFUNDED, $result);
     }
 
     public function testCreateCaptureFailedProcessor()

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /**
  *                       ######
  *                       ######
@@ -21,29 +23,25 @@
  *
  */
 
-namespace Adyen\Webhook\Processor;
+namespace Adyen\Webhook\Test\Unit\Processor;
 
 use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
+use Adyen\Webhook\Processor\ProcessorFactory;
 
-class ErrorProcessor extends Processor implements ProcessorInterface
+class RefundFailedProcessorTest extends TestCase
 {
-    public function process(): ?string
+    public function testCancelationProcessorNew()
     {
-        $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::ERROR,
-            'originalState' => $state
-        ];
+        $notification = $this->createNotificationSuccess(
+            [
+                'eventCode' => EventCodes::REFUND_FAILED,
+                'success' => 'true',
+            ]
+        );
+        $processor = ProcessorFactory::create($notification, PaymentStates::STATE_REFUNDED);
+        $newState = $processor->process();
 
-        if ($this->notification->isSuccess()) {
-            $state = PaymentStates::STATE_FAILED;
-        }
-
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::ERROR . ' notification.', $logContext);
-
-        return $state;
+        $this->assertEquals(PaymentStates::STATE_PAID, $newState);
     }
 }

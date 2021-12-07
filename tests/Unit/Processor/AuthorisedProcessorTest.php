@@ -27,29 +27,41 @@ use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
 use Adyen\Webhook\Processor\ProcessorFactory;
 
-class ProcessorsCancelTest extends TestCase
+class AuthorisedProcessorTest extends TestCase
 {
-    public function testCancelationProcessor()
+    public function testAuthorisedProcessorNew()
     {
         $notification = $this->createNotificationSuccess([
-                                                             'eventCode' => EventCodes::CANCELLATION,
+                                                             'eventCode' => EventCodes::AUTHORISED,
                                                              'success' => 'true',
                                                          ]);
         $processor = ProcessorFactory::create($notification, PaymentStates::STATE_NEW);
         $newState = $processor->process();
 
-        $this->assertEquals(PaymentStates::STATE_CANCELLED, $newState);
+        $this->assertEquals(PaymentStates::STATE_PAID, $newState);
     }
 
-    public function testCancelatedProcessor()
+    public function testAuthorisedProcessorProgress()
     {
         $notification = $this->createNotificationSuccess([
-                                                             'eventCode' => EventCodes::CANCELLED,
+                                                             'eventCode' => EventCodes::AUTHORISED,
                                                              'success' => 'true',
                                                          ]);
-        $processor = ProcessorFactory::create($notification, PaymentStates::STATE_NEW);
+        $processor = ProcessorFactory::create($notification, PaymentStates::STATE_IN_PROGRESS);
         $newState = $processor->process();
 
-        $this->assertEquals(PaymentStates::STATE_CANCELLED, $newState);
+        $this->assertEquals(PaymentStates::STATE_PAID, $newState);
+    }
+
+    public function testAuthorisedProcessorPending()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => EventCodes::AUTHORISED,
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, PaymentStates::STATE_PENDING);
+        $newState = $processor->process();
+
+        $this->assertEquals(PaymentStates::STATE_PAID, $newState);
     }
 }
