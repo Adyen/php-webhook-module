@@ -33,14 +33,12 @@ use Adyen\Webhook\Processor\CancelledProcessor;
 use Adyen\Webhook\Processor\CancelOrRefundProcessor;
 use Adyen\Webhook\Processor\CapturedFailedProcessor;
 use Adyen\Webhook\Processor\CaptureProcessor;
-use Adyen\Webhook\Processor\ErrorProcessor;
 use Adyen\Webhook\Processor\HandledExternallyProcessor;
 use Adyen\Webhook\Processor\ManualReviewRejectProcessor;
 use Adyen\Webhook\Processor\OfferClosedProcessor;
 use Adyen\Webhook\Processor\OrderClosedProcessor;
 use Adyen\Webhook\Processor\PendingProcessor;
 use Adyen\Webhook\Processor\ProcessorFactory;
-use Adyen\Webhook\Processor\ReceivedProcessor;
 use Adyen\Webhook\Processor\RecurringContractProcessor;
 use Adyen\Webhook\Processor\RefundFailedProcessor;
 use Adyen\Webhook\Processor\RefundProcessor;
@@ -181,17 +179,6 @@ class ProcessorFactoryTest extends TestCase
         $this->assertInstanceOf(CaptureProcessor::class, $processor);
     }
 
-    public function testErrorProcessor()
-    {
-        $notification = $this->createNotificationSuccess([
-                                                             'eventCode' => 'ERROR',
-                                                             'success' => 'true',
-                                                         ]);
-        $processor = ProcessorFactory::create($notification, 'in_progress');
-
-        $this->assertInstanceOf(ErrorProcessor::class, $processor);
-    }
-
     public function testHandledExternallyProcessor()
     {
         $notification = $this->createNotificationSuccess([
@@ -234,17 +221,6 @@ class ProcessorFactoryTest extends TestCase
         $processor = ProcessorFactory::create($notification, 'in_progress');
 
         $this->assertInstanceOf(PendingProcessor::class, $processor);
-    }
-
-    public function testReceivedProcessor()
-    {
-        $notification = $this->createNotificationSuccess([
-                                                             'eventCode' => 'RECEIVED',
-                                                             'success' => 'true',
-                                                         ]);
-        $processor = ProcessorFactory::create($notification, 'in_progress');
-
-        $this->assertInstanceOf(ReceivedProcessor::class, $processor);
     }
 
     public function testRecurringContractProcessor()
