@@ -34,6 +34,7 @@ use Adyen\Webhook\Processor\CancelOrRefundProcessor;
 use Adyen\Webhook\Processor\CapturedFailedProcessor;
 use Adyen\Webhook\Processor\CaptureProcessor;
 use Adyen\Webhook\Processor\HandledExternallyProcessor;
+use Adyen\Webhook\Processor\ManualReviewAcceptProcessor;
 use Adyen\Webhook\Processor\ManualReviewRejectProcessor;
 use Adyen\Webhook\Processor\OfferClosedProcessor;
 use Adyen\Webhook\Processor\OrderClosedProcessor;
@@ -188,6 +189,16 @@ class ProcessorFactoryTest extends TestCase
         $processor = ProcessorFactory::create($notification, 'in_progress');
 
         $this->assertInstanceOf(HandledExternallyProcessor::class, $processor);
+    }
+    public function testManualReviewAcceptProcessor()
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => 'MANUAL_REVIEW_ACCEPT',
+                                                             'success' => 'true',
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+
+        $this->assertInstanceOf(ManualReviewAcceptProcessor::class, $processor);
     }
 
     public function testManualReviewRejectProcessor()
