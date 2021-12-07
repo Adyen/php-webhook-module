@@ -103,4 +103,3 @@ class OrderClosedProcessorTest extends TestCase
         $this->assertEquals(PaymentStates::STATE_CANCELLED, $newState);
     }
 }
-

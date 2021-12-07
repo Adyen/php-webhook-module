@@ -67,4 +67,3 @@ class RefundProcessorTest extends TestCase
         $this->assertEquals(PaymentStates::STATE_PAID, $newState);
     }
 }
-
