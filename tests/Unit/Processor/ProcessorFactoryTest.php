@@ -51,25 +51,11 @@ use Adyen\Webhook\Processor\ReportAvailableProcessor;
 
 class ProcessorFactoryTest extends TestCase
 {
-    public static function invalidNotificationData(): array
-    {
-        return [
-            [
-                [],
-                ['error' => true, 'errorMessage' => 'Field(s) missing from notification data: eventCode, success'],
-            ],
-            [
-                ['eventCode' => 'foobar', 'success' => true],
-                ['error' => true, 'errorMessage' => 'Invalid value for the field(s) with key(s): eventCode']
-            ]
-        ];
-    }
-
     /**
      * Data provider to test the ProcessorFactory. The Payment State is not tested here
      * @return array[]
      */
-    public function eventCodesProvider()
+    public function eventCodesProvider(): array
     {
         return [
             [EventCodes::AUTHORISED, AuthorisedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
@@ -108,6 +94,20 @@ class ProcessorFactoryTest extends TestCase
         $this->assertInstanceOf($expectedProcessor, $processor);
     }
 
+    public static function invalidNotificationData(): array
+    {
+        return [
+            [
+                [],
+                ['error' => true, 'errorMessage' => 'Field(s) missing from notification data: eventCode, success'],
+            ],
+            [
+                ['eventCode' => 'foobar', 'success' => true],
+                ['error' => true, 'errorMessage' => 'Invalid value for the field(s) with key(s): eventCode']
+            ]
+        ];
+    }
+
     /**
      * @dataProvider invalidNotificationData
      */
@@ -118,5 +118,94 @@ class ProcessorFactoryTest extends TestCase
             $this->expectErrorMessage($result['errorMessage']);
         }
         Notification::createItem($notificationData);
+    }
+
+    /*
+     * Data provider with arguments: event code, original payment state, expected payment state and success
+     */
+    public function processorPaymentStatesProvider() : array
+    {
+        return [
+            [EventCodes::AUTHORISED, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISATION, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISATION, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISATION, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::CANCELLATION, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CANCELLATION, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CANCELLATION, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CANCELLED, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CANCELLED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CANCELLED, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CAPTURE_FAILED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::CAPTURE, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::CAPTURE, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::CAPTURE, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::HANDLED_EXTERNALLY, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::MANUAL_REVIEW_REJECT, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::MANUAL_REVIEW_ACCEPT, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::OFFER_CLOSED, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::OFFER_CLOSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::OFFER_CLOSED, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'false'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'false'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'false'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_PAID, PaymentStates::STATE_REFUNDED, 'false'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_PARTIALLY_REFUNDED, PaymentStates::STATE_REFUNDED, 'false'],
+            [EventCodes::PENDING, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::RECURRING_CONTRACT, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::REPORT_AVAILABLE, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::REFUND_FAILED, PaymentStates::STATE_REFUNDED, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::REFUND, PaymentStates::STATE_PAID, PaymentStates::STATE_REFUNDED, 'true'],
+            [EventCodes::REFUND, PaymentStates::STATE_PARTIALLY_REFUNDED, PaymentStates::STATE_REFUNDED, 'true'],
+            [EventCodes::REFUND, PaymentStates::STATE_REFUNDED, PaymentStates::STATE_PAID, 'false'],
+        ];
+    }
+
+    /**
+     * @dataProvider processorPaymentStatesProvider
+     */
+    public function testProcessorPaymentStates($eventCode, $originalState, $expectedState, $success)
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => $eventCode,
+                                                             'success' => $success,
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, $originalState);
+        $newState = $processor->process();
+
+        $this->assertEquals($expectedState, $newState);
+    }
+
+    public function testCreateCancelOrRefundProcessorRefund()
+    {
+        $notification = $this->createNotificationSuccess(
+            [
+                'eventCode' => EventCodes::CANCEL_OR_REFUND,
+                'success' => 'true',
+            ]
+        );
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+        $notification->additionalData = array('modification.action' => 'refund');
+        $result = $processor->process($notification);
+        $this->assertEquals(PaymentStates::STATE_REFUNDED, $result);
+    }
+
+    public function testCreateCancelOrRefundProcessorCancel()
+    {
+        $notification = $this->createNotificationSuccess(
+            [
+                'eventCode' => 'CANCEL_OR_REFUND',
+                'success' => 'true',
+            ]
+        );
+        $processor = ProcessorFactory::create($notification, 'in_progress');
+        $notification->additionalData = array('modification.action' => 'cancel');
+        $result = $processor->process($notification);
+        $this->assertEquals(PaymentStates::STATE_CANCELLED, $result);
     }
 }
