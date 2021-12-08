@@ -24,22 +24,11 @@
 namespace Adyen\Webhook\Processor;
 
 use Adyen\Webhook\EventCodes;
-use Adyen\Webhook\PaymentStates;
 
 class ReportAvailableProcessor extends Processor implements ProcessorInterface
 {
     public function process(): ?string
     {
-        $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::REPORT_AVAILABLE,
-            'originalState' => $state
-        ];
-
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::REPORT_AVAILABLE . ' notification.', $logContext);
-
-        return $state;
+        return $this->unchanged(EventCodes::REPORT_AVAILABLE);
     }
 }

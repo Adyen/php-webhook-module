@@ -30,16 +30,6 @@ class HandledExternallyProcessor extends Processor implements ProcessorInterface
 {
     public function process(): ?string
     {
-        $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::HANDLED_EXTERNALLY,
-            'originalState' => $state
-        ];
-
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::HANDLED_EXTERNALLY . ' notification.', $logContext);
-
-        return $state;
+        return $this->unchanged(EventCodes::HANDLED_EXTERNALLY);
     }
 }

@@ -67,4 +67,25 @@ abstract class Processor implements ProcessorInterface
             throw new InvalidDataException('Invalid state.');
         }
     }
+
+    /**
+     * In case of unchanged payment state based on notification log
+     * the eventCode, originalState and newState
+     * @param string $event
+     * @return string
+     */
+    protected function unchanged(string $event): string
+    {
+        $state = $this->initialState;
+        $this->log(
+            'info',
+            'Processed ' . $event . ' notification.',
+            [
+                'eventCode' => $event,
+                'originalState' => $state,
+                'newState' => $state
+            ]
+        );
+        return $state;
+    }
 }

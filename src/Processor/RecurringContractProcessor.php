@@ -29,16 +29,6 @@ class RecurringContractProcessor extends Processor implements ProcessorInterface
 {
     public function process(): ?string
     {
-        $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::RECURRING_CONTRACT,
-            'originalState' => $state
-        ];
-
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::RECURRING_CONTRACT . ' notification.', $logContext);
-
-        return $state;
+        return $this->unchanged(EventCodes::RECURRING_CONTRACT);
     }
 }

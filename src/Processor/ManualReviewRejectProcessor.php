@@ -30,16 +30,6 @@ class ManualReviewRejectProcessor extends Processor implements ProcessorInterfac
 {
     public function process(): ?string
     {
-        $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::MANUAL_REVIEW_REJECT,
-            'originalState' => $state
-        ];
-
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::MANUAL_REVIEW_REJECT . ' notification.', $logContext);
-
-        return $state;
+        return $this->unchanged(EventCodes::MANUAL_REVIEW_REJECT);
     }
 }

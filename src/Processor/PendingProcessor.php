@@ -30,16 +30,6 @@ class PendingProcessor extends Processor implements ProcessorInterface
 {
     public function process(): ?string
     {
-        $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::PENDING,
-            'originalState' => $state
-        ];
-
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::PENDING . ' notification.', $logContext);
-
-        return $state;
+        return $this->unchanged(EventCodes::PENDING);
     }
 }

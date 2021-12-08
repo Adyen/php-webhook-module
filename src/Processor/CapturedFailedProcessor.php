@@ -30,16 +30,6 @@ class CapturedFailedProcessor extends Processor implements ProcessorInterface
 {
     public function process(): ?string
     {
-        $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::CAPTURE_FAILED,
-            'originalState' => $state
-        ];
-
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::CAPTURE_FAILED . ' notification.', $logContext);
-
-        return $state;
+        return $this->unchanged(EventCodes::CAPTURE_FAILED);
     }
 }
