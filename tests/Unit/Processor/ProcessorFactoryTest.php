@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 /**
  *                       ######
  *                       ######
@@ -50,30 +51,44 @@ use Adyen\Webhook\Processor\ReportAvailableProcessor;
 
 class ProcessorFactoryTest extends TestCase
 {
+    public static function invalidNotificationData(): array
+    {
+        return [
+            [
+                [],
+                ['error' => true, 'errorMessage' => 'Field(s) missing from notification data: eventCode, success'],
+            ],
+            [
+                ['eventCode' => 'foobar', 'success' => true],
+                ['error' => true, 'errorMessage' => 'Invalid value for the field(s) with key(s): eventCode']
+            ]
+        ];
+    }
+
     /**
-     * Data provider to test the ProcessorFactory. The Payment State is tested here
+     * Data provider to test the ProcessorFactory. The Payment State is not tested here
      * @return array[]
      */
     public function eventCodesProvider()
     {
         return [
-            [EventCodes::AUTHORISED, AuthorisedProcessor::class, 'in_progress'],
-            [EventCodes::AUTHORISATION, AuthorisationProcessor::class, 'in_progress'],
-            [EventCodes::CANCELLATION, CancellationProcessor::class, 'in_progress'],
-            [EventCodes::CANCELLED, CancelledProcessor::class, 'in_progress'],
-            [EventCodes::CANCEL_OR_REFUND, CancelOrRefundProcessor::class, 'in_progress'],
-            [EventCodes::CAPTURE_FAILED, CapturedFailedProcessor::class, 'in_progress'],
-            [EventCodes::CAPTURE, CaptureProcessor::class, 'in_progress'],
-            [EventCodes::HANDLED_EXTERNALLY, HandledExternallyProcessor::class, 'in_progress'],
-            [EventCodes::MANUAL_REVIEW_ACCEPT, ManualReviewAcceptProcessor::class, 'in_progress'],
-            [EventCodes::MANUAL_REVIEW_REJECT, ManualReviewRejectProcessor::class, 'in_progress'],
-            [EventCodes::OFFER_CLOSED, OfferClosedProcessor::class, 'in_progress'],
-            [EventCodes::ORDER_CLOSED, OrderClosedProcessor::class, 'in_progress'],
-            [EventCodes::PENDING, PendingProcessor::class, 'in_progress'],
-            [EventCodes::RECURRING_CONTRACT, RecurringContractProcessor::class, 'in_progress'],
-            [EventCodes::REFUND, RefundProcessor::class, 'in_progress'],
-            [EventCodes::REFUND_FAILED, RefundFailedProcessor::class, 'in_progress'],
-            [EventCodes::REPORT_AVAILABLE, ReportAvailableProcessor::class, 'in_progress']
+            [EventCodes::AUTHORISED, AuthorisedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::AUTHORISATION, AuthorisationProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CANCELLATION, CancellationProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CANCELLED, CancelledProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CANCEL_OR_REFUND, CancelOrRefundProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CAPTURE_FAILED, CapturedFailedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CAPTURE, CaptureProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::HANDLED_EXTERNALLY, HandledExternallyProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::MANUAL_REVIEW_ACCEPT, ManualReviewAcceptProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::MANUAL_REVIEW_REJECT, ManualReviewRejectProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::OFFER_CLOSED, OfferClosedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::ORDER_CLOSED, OrderClosedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::PENDING, PendingProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::RECURRING_CONTRACT, RecurringContractProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::REFUND, RefundProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::REFUND_FAILED, RefundFailedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::REPORT_AVAILABLE, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS]
         ];
     }
 
@@ -82,10 +97,12 @@ class ProcessorFactoryTest extends TestCase
      */
     public function testCreate($event, $expectedProcessor, $currentState)
     {
-        $notification = $this->createNotificationSuccess([
-                                                             'eventCode' => $event,
-                                                             'success' => 'true',
-                                                         ]);
+        $notification = $this->createNotificationSuccess(
+            [
+                'eventCode' => $event,
+                'success' => 'true',
+            ]
+        );
         $processor = ProcessorFactory::create($notification, $currentState);
 
         $this->assertInstanceOf($expectedProcessor, $processor);
@@ -101,19 +118,5 @@ class ProcessorFactoryTest extends TestCase
             $this->expectErrorMessage($result['errorMessage']);
         }
         Notification::createItem($notificationData);
-    }
-
-    public static function invalidNotificationData(): array
-    {
-        return [
-            [
-                [],
-                ['error' => true, 'errorMessage' => 'Field(s) missing from notification data: eventCode, success'],
-            ],
-            [
-                ['eventCode' => 'foobar', 'success' => true],
-                ['error' => true, 'errorMessage' => 'Invalid value for the field(s) with key(s): eventCode']
-            ]
-        ];
     }
 }
