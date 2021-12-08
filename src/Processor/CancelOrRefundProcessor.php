@@ -41,9 +41,9 @@ class CancelOrRefundProcessor extends Processor implements ProcessorInterface
         ];
 
         if ($this->notification->isSuccess() && isset($this->notification->additionalData[self::MODIFICATION_ACTION])) {
-            if ($this->notification->additionalData[self::MODIFICATION_ACTION] == self::CANCEL) {
+            if ($this->notification->additionalData[self::MODIFICATION_ACTION] === self::CANCEL) {
                 $state = PaymentStates::STATE_CANCELLED;
-            } elseif ($this->notification->additionalData[self::MODIFICATION_ACTION] == self::REFUND) {
+            } elseif ($this->notification->additionalData[self::MODIFICATION_ACTION] === self::REFUND) {
                 $state = PaymentStates::STATE_REFUNDED;
             }
         }

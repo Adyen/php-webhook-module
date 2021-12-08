@@ -36,7 +36,7 @@ class OfferClosedProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
-        if (PaymentStates::STATE_NEW == $state
+        if (PaymentStates::STATE_NEW === $state
             || PaymentStates::STATE_IN_PROGRESS === $state
             || PaymentStates::STATE_PENDING === $state) {
             $state = PaymentStates::STATE_CANCELLED;

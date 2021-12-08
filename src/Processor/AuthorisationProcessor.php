@@ -42,7 +42,7 @@ class AuthorisationProcessor extends Processor implements ProcessorInterface
                 || PaymentStates::STATE_PENDING === $state)) {
             $state = PaymentStates::STATE_PAID;
         } else {
-            if (PaymentStates::STATE_NEW == $state
+            if (PaymentStates::STATE_NEW === $state
                 || PaymentStates::STATE_IN_PROGRESS === $state
                 || PaymentStates::STATE_PENDING === $state
                 || PaymentStates::STATE_PAID === $state) {

@@ -37,7 +37,7 @@ class CaptureProcessor extends Processor implements ProcessorInterface
         ];
 
         if ($this->notification->isSuccess() &&
-            (PaymentStates::STATE_NEW == $state
+            (PaymentStates::STATE_NEW === $state
                 || PaymentStates::STATE_IN_PROGRESS === $state
                 || PaymentStates::STATE_PENDING === $state)) {
             $state = PaymentStates::STATE_PAID;

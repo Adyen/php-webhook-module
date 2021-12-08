@@ -37,12 +37,12 @@ class RefundProcessor extends Processor implements ProcessorInterface
         ];
 
         if ($this->notification->isSuccess()) {
-            if (PaymentStates::STATE_PAID == $state
+            if (PaymentStates::STATE_PAID === $state
                 || PaymentStates::STATE_PARTIALLY_REFUNDED === $state) {
                 $state = PaymentStates::STATE_REFUNDED;
             }
         } else {
-            if (PaymentStates::STATE_REFUNDED == $state) {
+            if (PaymentStates::STATE_REFUNDED === $state) {
                 $state = PaymentStates::STATE_PAID;
             }
         }

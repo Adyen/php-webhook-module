@@ -37,17 +37,17 @@ class OrderClosedProcessor extends Processor implements ProcessorInterface
         ];
 
         if ($this->notification->isSuccess()) {
-            if (PaymentStates::STATE_NEW == $state
+            if (PaymentStates::STATE_NEW === $state
                 || PaymentStates::STATE_IN_PROGRESS === $state
                 || PaymentStates::STATE_PENDING === $state) {
                 $state = PaymentStates::STATE_PAID;
             }
         } else {
-            if (PaymentStates::STATE_NEW == $state
+            if (PaymentStates::STATE_NEW === $state
                 || PaymentStates::STATE_IN_PROGRESS === $state
                 || PaymentStates::STATE_PENDING === $state) {
                 $state = PaymentStates::STATE_CANCELLED;
-            } elseif (PaymentStates::STATE_PAID == $state
+            } elseif (PaymentStates::STATE_PAID === $state
                 || PaymentStates::STATE_PARTIALLY_REFUNDED === $state) {
                 $state = PaymentStates::STATE_REFUNDED;
             }
