@@ -71,17 +71,17 @@ abstract class Processor implements ProcessorInterface
     /**
      * In case of unchanged payment state based on notification log
      * the eventCode, originalState and newState
-     * @param string $event
+     * @param string $eventCode
      * @return string
      */
-    protected function unchanged(string $event): string
+    protected function unchanged(string $eventCode): string
     {
         $state = $this->initialState;
         $this->log(
             'info',
-            'Processed ' . $event . ' notification.',
+            'Processed ' . $eventCode . ' notification.',
             [
-                'eventCode' => $event,
+                'eventCode' => $eventCode,
                 'originalState' => $state,
                 'newState' => $state
             ]
