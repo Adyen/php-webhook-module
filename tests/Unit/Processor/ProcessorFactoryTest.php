@@ -189,7 +189,7 @@ class ProcessorFactoryTest extends TestCase
                 'success' => 'true',
             ]
         );
-        $processor = ProcessorFactory::create($notification, 'in_progress');
+        $processor = ProcessorFactory::create($notification, PaymentStates::STATE_PAID);
         $notification->additionalData = array('modification.action' => 'refund');
         $result = $processor->process($notification);
         $this->assertEquals(PaymentStates::STATE_REFUNDED, $result);
@@ -203,7 +203,7 @@ class ProcessorFactoryTest extends TestCase
                 'success' => 'true',
             ]
         );
-        $processor = ProcessorFactory::create($notification, 'in_progress');
+        $processor = ProcessorFactory::create($notification, PaymentStates::STATE_IN_PROGRESS);
         $notification->additionalData = array('modification.action' => 'cancel');
         $result = $processor->process($notification);
         $this->assertEquals(PaymentStates::STATE_CANCELLED, $result);

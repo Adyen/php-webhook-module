@@ -24,8 +24,6 @@
 namespace Adyen\Webhook\Processor;
 
 use Adyen\Webhook\EventCodes;
-use Adyen\Webhook\PaymentStates;
-
 class CancelOrRefundProcessor extends Processor implements ProcessorInterface
 {
     const MODIFICATION_ACTION = 'modification.action';
@@ -42,9 +40,11 @@ class CancelOrRefundProcessor extends Processor implements ProcessorInterface
 
         if ($this->notification->isSuccess() && isset($this->notification->additionalData[self::MODIFICATION_ACTION])) {
             if ($this->notification->additionalData[self::MODIFICATION_ACTION] === self::CANCEL) {
-                $state = PaymentStates::STATE_CANCELLED;
+                $cancellationProcessor = new CancellationProcessor($this->notification, $state);
+                $state = $cancellationProcessor->process();
             } elseif ($this->notification->additionalData[self::MODIFICATION_ACTION] === self::REFUND) {
-                $state = PaymentStates::STATE_REFUNDED;
+                $refundProcessor = new RefundProcessor($this->notification, $state);
+                $state = $refundProcessor->process();
             }
         }
 
