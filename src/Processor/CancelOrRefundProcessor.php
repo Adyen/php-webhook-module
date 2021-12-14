@@ -24,6 +24,7 @@
 namespace Adyen\Webhook\Processor;
 
 use Adyen\Webhook\EventCodes;
+
 class CancelOrRefundProcessor extends Processor implements ProcessorInterface
 {
     const MODIFICATION_ACTION = 'modification.action';
