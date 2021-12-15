@@ -21,29 +21,18 @@
  *
  */
 
-namespace Adyen\Webhook\Processor;
+namespace Adyen\Webhook\Test\Unit\Processor;
 
-use Adyen\Webhook\EventCodes;
-use Adyen\Webhook\PaymentStates;
+use Adyen\Webhook\Notification;
 
-class RefundFailedProcessor extends Processor implements ProcessorInterface
+class TestCase extends \PHPUnit\Framework\TestCase
 {
-    public function process(): ?string
+    public function createNotificationSuccess($notificationData): Notification
     {
-        $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::REFUND_FAILED,
-            'originalState' => $state
-        ];
+        $notificationItem = Notification::createItem($notificationData);
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::STATE_REFUNDED) {
-            $state = PaymentStates::STATE_PAID;
-        }
+        $this->assertInstanceOf(Notification::class, $notificationItem);
 
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::REFUND_FAILED . ' notification.', $logContext);
-
-        return $state;
+        return $notificationItem;
     }
 }

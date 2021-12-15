@@ -36,8 +36,10 @@ class OfferClosedProcessor extends Processor implements ProcessorInterface
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && PaymentStates::STATE_IN_PROGRESS === $state) {
-            $state = PaymentStates::STATE_FAILED;
+        if (PaymentStates::STATE_NEW === $state
+            || PaymentStates::STATE_IN_PROGRESS === $state
+            || PaymentStates::STATE_PENDING === $state) {
+            $state = PaymentStates::STATE_CANCELLED;
         }
         $logContext['newState'] = $state;
 

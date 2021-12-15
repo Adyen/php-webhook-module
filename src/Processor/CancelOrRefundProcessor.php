@@ -24,25 +24,34 @@
 namespace Adyen\Webhook\Processor;
 
 use Adyen\Webhook\EventCodes;
-use Adyen\Webhook\PaymentStates;
 
-class RefundFailedProcessor extends Processor implements ProcessorInterface
+class CancelOrRefundProcessor extends Processor implements ProcessorInterface
 {
+    const MODIFICATION_ACTION = 'modification.action';
+    const CANCEL = 'cancel';
+    const REFUND = 'refund';
+
     public function process(): ?string
     {
         $state = $this->initialState;
         $logContext = [
-            'eventCode' => EventCodes::REFUND_FAILED,
+            'eventCode' => EventCodes::CANCEL_OR_REFUND,
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::STATE_REFUNDED) {
-            $state = PaymentStates::STATE_PAID;
+        if ($this->notification->isSuccess() && isset($this->notification->additionalData[self::MODIFICATION_ACTION])) {
+            if ($this->notification->additionalData[self::MODIFICATION_ACTION] === self::CANCEL) {
+                $cancellationProcessor = new CancellationProcessor($this->notification, $state);
+                $state = $cancellationProcessor->process();
+            } elseif ($this->notification->additionalData[self::MODIFICATION_ACTION] === self::REFUND) {
+                $refundProcessor = new RefundProcessor($this->notification, $state);
+                $state = $refundProcessor->process();
+            }
         }
 
         $logContext['newState'] = $state;
 
-        $this->log('info', 'Processed ' . EventCodes::REFUND_FAILED . ' notification.', $logContext);
+        $this->log('info', 'Processed ' . EventCodes::CANCEL_OR_REFUND . ' notification.', $logContext);
 
         return $state;
     }
