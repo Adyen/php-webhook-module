@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 /**
  *                       ######
  *                       ######
@@ -23,80 +24,74 @@
 
 namespace Adyen\Webhook\Test\Unit\Processor;
 
+use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
+use Adyen\Webhook\PaymentStates;
 use Adyen\Webhook\Processor\AuthorisationProcessor;
+use Adyen\Webhook\Processor\AuthorisedProcessor;
+use Adyen\Webhook\Processor\CancellationProcessor;
+use Adyen\Webhook\Processor\CancelledProcessor;
+use Adyen\Webhook\Processor\CancelOrRefundProcessor;
+use Adyen\Webhook\Processor\CapturedFailedProcessor;
+use Adyen\Webhook\Processor\CaptureProcessor;
+use Adyen\Webhook\Processor\HandledExternallyProcessor;
+use Adyen\Webhook\Processor\ManualReviewAcceptProcessor;
+use Adyen\Webhook\Processor\ManualReviewRejectProcessor;
 use Adyen\Webhook\Processor\OfferClosedProcessor;
+use Adyen\Webhook\Processor\OrderClosedProcessor;
+use Adyen\Webhook\Processor\PendingProcessor;
 use Adyen\Webhook\Processor\ProcessorFactory;
+use Adyen\Webhook\Processor\RecurringContractProcessor;
 use Adyen\Webhook\Processor\RefundFailedProcessor;
 use Adyen\Webhook\Processor\RefundProcessor;
-use PHPUnit\Framework\TestCase;
+
+
+use Adyen\Webhook\Processor\ReportAvailableProcessor;
 
 class ProcessorFactoryTest extends TestCase
 {
-    private function createNotificationSuccess($notificationData): Notification
+    /**
+     * Data provider to test the ProcessorFactory. The Payment State is not tested here
+     * @return array[]
+     */
+    public function eventCodesProvider(): array
     {
-        $notificationItem = Notification::createItem($notificationData);
-
-        $this->assertInstanceOf(Notification::class, $notificationItem);
-
-        return $notificationItem;
+        return [
+            [EventCodes::AUTHORISED, AuthorisedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::AUTHORISATION, AuthorisationProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CANCELLATION, CancellationProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CANCELLED, CancelledProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CANCEL_OR_REFUND, CancelOrRefundProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CAPTURE_FAILED, CapturedFailedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CAPTURE, CaptureProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::HANDLED_EXTERNALLY, HandledExternallyProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::MANUAL_REVIEW_ACCEPT, ManualReviewAcceptProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::MANUAL_REVIEW_REJECT, ManualReviewRejectProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::OFFER_CLOSED, OfferClosedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::ORDER_CLOSED, OrderClosedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::PENDING, PendingProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::RECURRING_CONTRACT, RecurringContractProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::REFUND, RefundProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::REFUND_FAILED, RefundFailedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::REPORT_AVAILABLE, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS]
+        ];
     }
 
     /**
-     * @dataProvider invalidNotificationData
+     * @dataProvider eventCodesProvider
      */
-    public function testCreateNotificationFail($notificationData, $result)
+    public function testCreate($event, $expectedProcessor, $currentState)
     {
-        if ($result['error']) {
-            $this->expectException(InvalidDataException::class);
-            $this->expectErrorMessage($result['errorMessage']);
-        }
-        Notification::createItem($notificationData);
-    }
+        $notification = $this->createNotificationSuccess(
+            [
+                'eventCode' => $event,
+                'success' => 'true',
+            ]
+        );
+        $processor = ProcessorFactory::create($notification, $currentState);
 
-    public function testCreateAuthorisationProcessor()
-    {
-        $notification = $this->createNotificationSuccess([
-            'eventCode' => 'AUTHORISATION',
-            'success' => 'true',
-        ]);
-        $processor = ProcessorFactory::create($notification, 'paid');
-
-        $this->assertInstanceOf(AuthorisationProcessor::class, $processor);
-    }
-
-    public function testCreateOfferClosedProcessor()
-    {
-        $notification = $this->createNotificationSuccess([
-            'eventCode' => 'OFFER_CLOSED',
-            'success' => 'true',
-        ]);
-        $processor = ProcessorFactory::create($notification, 'paid');
-
-        $this->assertInstanceOf(OfferClosedProcessor::class, $processor);
-    }
-
-    public function testCreateRefundProcessor()
-    {
-        $notification = $this->createNotificationSuccess([
-            'eventCode' => 'REFUND',
-            'success' => 'true',
-        ]);
-        $processor = ProcessorFactory::create($notification, 'paid');
-
-        $this->assertInstanceOf(RefundProcessor::class, $processor);
-    }
-
-    public function testCreateRefundFailedProcessor()
-    {
-        $notification = $this->createNotificationSuccess([
-            'eventCode' => 'REFUND_FAILED',
-            'success' => 'true',
-        ]);
-        $processor = ProcessorFactory::create($notification, 'refunded');
-
-        $this->assertInstanceOf(RefundFailedProcessor::class, $processor);
+        $this->assertInstanceOf($expectedProcessor, $processor);
     }
 
     public static function invalidNotificationData(): array
@@ -111,5 +106,106 @@ class ProcessorFactoryTest extends TestCase
                 ['error' => true, 'errorMessage' => 'Invalid value for the field(s) with key(s): eventCode']
             ]
         ];
+    }
+
+    /**
+     * @dataProvider invalidNotificationData
+     */
+    public function testCreateNotificationFail($notificationData, $result)
+    {
+        if ($result['error']) {
+            $this->expectException(InvalidDataException::class);
+            $this->expectErrorMessage($result['errorMessage']);
+        }
+        Notification::createItem($notificationData);
+    }
+
+    /*
+     * Data provider with arguments: event code, original payment state, expected payment state and success
+     */
+    public function processorPaymentStatesProvider() : array
+    {
+        return [
+            [EventCodes::AUTHORISED, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISATION, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISATION, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISATION, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::CANCELLATION, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CANCELLATION, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CANCELLATION, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CANCELLED, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CANCELLED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CANCELLED, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CAPTURE_FAILED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::CAPTURE, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::CAPTURE, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::CAPTURE, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::HANDLED_EXTERNALLY, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::MANUAL_REVIEW_REJECT, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::MANUAL_REVIEW_ACCEPT, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::OFFER_CLOSED, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::OFFER_CLOSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::OFFER_CLOSED, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'false'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'false'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'false'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_PAID, PaymentStates::STATE_REFUNDED, 'false'],
+            [EventCodes::ORDER_CLOSED, PaymentStates::STATE_PARTIALLY_REFUNDED, PaymentStates::STATE_REFUNDED, 'false'],
+            [EventCodes::PENDING, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::RECURRING_CONTRACT, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::REPORT_AVAILABLE, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::REFUND_FAILED, PaymentStates::STATE_REFUNDED, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::REFUND, PaymentStates::STATE_PAID, PaymentStates::STATE_REFUNDED, 'true'],
+            [EventCodes::REFUND, PaymentStates::STATE_PARTIALLY_REFUNDED, PaymentStates::STATE_REFUNDED, 'true'],
+            [EventCodes::REFUND, PaymentStates::STATE_REFUNDED, PaymentStates::STATE_PAID, 'false'],
+        ];
+    }
+
+    /**
+     * @dataProvider processorPaymentStatesProvider
+     */
+    public function testProcessorPaymentStates($eventCode, $originalState, $expectedState, $success)
+    {
+        $notification = $this->createNotificationSuccess([
+                                                             'eventCode' => $eventCode,
+                                                             'success' => $success,
+                                                         ]);
+        $processor = ProcessorFactory::create($notification, $originalState);
+        $newState = $processor->process();
+
+        $this->assertEquals($expectedState, $newState);
+    }
+
+    public function testCreateCancelOrRefundProcessorRefund()
+    {
+        $notification = $this->createNotificationSuccess(
+            [
+                'eventCode' => EventCodes::CANCEL_OR_REFUND,
+                'success' => 'true',
+            ]
+        );
+        $processor = ProcessorFactory::create($notification, PaymentStates::STATE_PAID);
+        $notification->additionalData = array('modification.action' => 'refund');
+        $result = $processor->process($notification);
+        $this->assertEquals(PaymentStates::STATE_REFUNDED, $result);
+    }
+
+    public function testCreateCancelOrRefundProcessorCancel()
+    {
+        $notification = $this->createNotificationSuccess(
+            [
+                'eventCode' => 'CANCEL_OR_REFUND',
+                'success' => 'true',
+            ]
+        );
+        $processor = ProcessorFactory::create($notification, PaymentStates::STATE_IN_PROGRESS);
+        $notification->additionalData = array('modification.action' => 'cancel');
+        $result = $processor->process($notification);
+        $this->assertEquals(PaymentStates::STATE_CANCELLED, $result);
     }
 }

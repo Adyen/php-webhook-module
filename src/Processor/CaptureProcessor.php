@@ -26,23 +26,25 @@ namespace Adyen\Webhook\Processor;
 use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
 
-class RefundFailedProcessor extends Processor implements ProcessorInterface
+class CaptureProcessor extends Processor implements ProcessorInterface
 {
     public function process(): ?string
     {
         $state = $this->initialState;
         $logContext = [
-            'eventCode' => EventCodes::REFUND_FAILED,
+            'eventCode' => EventCodes::CAPTURE,
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() && $state === PaymentStates::STATE_REFUNDED) {
+        if ($this->notification->isSuccess() &&
+            (PaymentStates::STATE_NEW === $state
+                || PaymentStates::STATE_IN_PROGRESS === $state
+                || PaymentStates::STATE_PENDING === $state)) {
             $state = PaymentStates::STATE_PAID;
         }
-
         $logContext['newState'] = $state;
 
-        $this->log('info', 'Processed ' . EventCodes::REFUND_FAILED . ' notification.', $logContext);
+        $this->log('info', 'Processed ' . EventCodes::CAPTURE . ' notification.', $logContext);
 
         return $state;
     }
