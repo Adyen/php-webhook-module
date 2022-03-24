@@ -18,7 +18,7 @@
     }
   },
   "require": {
-    "adyen/php-api-library": "^11"
+    "adyen/php-api-library": "^12"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5.0",
