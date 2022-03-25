@@ -23,10 +23,9 @@
 
 namespace Adyen\Webhook\Receiver;
 
-use Adyen\AdyenException;
-use Adyen\Exception\AuthenticationException;
+use Adyen\Webhook\Exception\AuthenticationException;
 use Adyen\Webhook\Exception\HMACKeyValidationException;
-use Adyen\Exception\MerchantAccountCodeException;
+use Adyen\Webhook\Exception\MerchantAccountCodeException;
 use Adyen\Webhook\Exception\InvalidDataException;
 
 class NotificationReceiver
