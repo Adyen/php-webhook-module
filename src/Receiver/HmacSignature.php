@@ -23,7 +23,6 @@
 
 namespace Adyen\Webhook\Receiver;
 
-use Adyen\AdyenException;
 use Adyen\Webhook\Exception\HMACKeyValidationException;
 use Adyen\Webhook\Exception\InvalidDataException;
 
