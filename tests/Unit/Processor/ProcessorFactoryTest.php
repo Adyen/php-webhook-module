@@ -103,7 +103,7 @@ class ProcessorFactoryTest extends TestCase
             ],
             [
                 ['eventCode' => 'foobar', 'success' => true],
-                ['error' => true, 'errorMessage' => 'Invalid value for the field(s) with key(s): eventCode']
+                ['error' => true, 'errorMessage' => 'Invalid value for the field(s) with key(s): foobar']
             ]
         ];
     }
