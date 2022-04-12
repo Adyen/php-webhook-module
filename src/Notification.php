@@ -83,7 +83,7 @@ class Notification
             // If an invalid event code is passed
             if (isset($data[self::PROPERTY_EVENT_CODE]) &&
                 !in_array($data[self::PROPERTY_EVENT_CODE], $eventCodes->getConstants())) {
-                $invalid[] = self::PROPERTY_EVENT_CODE;
+                $invalid[self::PROPERTY_EVENT_CODE] = $data[self::PROPERTY_EVENT_CODE];
             }
         }
 
