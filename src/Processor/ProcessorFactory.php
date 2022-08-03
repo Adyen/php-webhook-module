@@ -38,8 +38,6 @@ class ProcessorFactory
         EventCodes::REFUND => RefundProcessor::class,
         EventCodes::REFUND_FAILED => RefundFailedProcessor::class,
         EventCodes::PENDING => PendingProcessor::class,
-        EventCodes::AUTHORISED => AuthorisedProcessor::class,
-        EventCodes::CANCELLED => CancelledProcessor::class,
         EventCodes::CANCEL_OR_REFUND => CancelOrRefundProcessor::class,
         EventCodes::CAPTURE => CaptureProcessor::class,
         EventCodes::CAPTURE_FAILED => CapturedFailedProcessor::class,
