@@ -1,1 +1,0 @@
-{"dependencies":[["racc",["~> 1.4"]],["nokogiri",[">= 0"]],["vagrant-parallels",["= 2.2.5"]],["log4r",[">= 0"]],["concurrent-ruby",["~> 1.0"]],["i18n",[">= 0"]],["micromachine",[">= 2","< 4"]],["vagrant-vbguest",["= 0.21.0"]]],"checksum":"bbca41f3f25f8a605dde48bf1781b76532e26ba0b6d330ef121d171b4a448915","vagrant_version":"2.2.19"}
