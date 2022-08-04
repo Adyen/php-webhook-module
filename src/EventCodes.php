@@ -27,8 +27,6 @@ final class EventCodes
 {
     const AUTHORISATION = 'AUTHORISATION';
     const PENDING = 'PENDING';
-    const AUTHORISED = 'AUTHORISED';
-    const CANCELLED = 'CANCELLED';
     const REFUND = 'REFUND';
     const REFUND_FAILED = 'REFUND_FAILED';
     const CANCEL_OR_REFUND = 'CANCEL_OR_REFUND';

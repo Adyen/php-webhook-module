@@ -58,10 +58,8 @@ class ProcessorFactoryTest extends TestCase
     public function eventCodesProvider(): array
     {
         return [
-            [EventCodes::AUTHORISED, AuthorisedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::AUTHORISATION, AuthorisationProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::CANCELLATION, CancellationProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::CANCELLED, CancelledProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::CANCEL_OR_REFUND, CancelOrRefundProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::CAPTURE_FAILED, CapturedFailedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::CAPTURE, CaptureProcessor::class, PaymentStates::STATE_IN_PROGRESS],
@@ -126,18 +124,12 @@ class ProcessorFactoryTest extends TestCase
     public function processorPaymentStatesProvider() : array
     {
         return [
-            [EventCodes::AUTHORISED, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
-            [EventCodes::AUTHORISED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
-            [EventCodes::AUTHORISED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
             [EventCodes::AUTHORISATION, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
             [EventCodes::AUTHORISATION, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
             [EventCodes::AUTHORISATION, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
             [EventCodes::CANCELLATION, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
             [EventCodes::CANCELLATION, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
             [EventCodes::CANCELLATION, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
-            [EventCodes::CANCELLED, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
-            [EventCodes::CANCELLED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
-            [EventCodes::CANCELLED, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
             [EventCodes::CAPTURE_FAILED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
             [EventCodes::CAPTURE, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
             [EventCodes::CAPTURE, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
