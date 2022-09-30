@@ -72,7 +72,15 @@ class ProcessorFactoryTest extends TestCase
             [EventCodes::RECURRING_CONTRACT, RecurringContractProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::REFUND, RefundProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::REFUND_FAILED, RefundFailedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::REPORT_AVAILABLE, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS]
+            [EventCodes::REPORT_AVAILABLE, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::AUTHORISATION_ADJUSTMENT, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::ORDER_OPENED, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::REFUNDED_REVERSED, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::REFUND_WITH_DATA, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::VOID_PENDING_REFUND, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CHARGEBACK, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CHARGEBACK, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::SECOND_CHARGEBACK, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS]
         ];
     }
 

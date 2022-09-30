@@ -47,7 +47,13 @@ class ProcessorFactory
         EventCodes::MANUAL_REVIEW_REJECT => ManualReviewRejectProcessor::class,
         EventCodes::RECURRING_CONTRACT => RecurringContractProcessor::class,
         EventCodes::REPORT_AVAILABLE => ReportAvailableProcessor::class,
-        EventCodes::ORDER_CLOSED => OrderClosedProcessor::class
+        EventCodes::AUTHORISATION_ADJUSTMENT => AuthorisationAdjustmentProcessor::class,
+        EventCodes::ORDER_OPENED => OrderOpenedProcessor::class,
+        EventCodes::REFUNDED_REVERSED => RefundedReversedProcessor::class,
+        EventCodes::VOID_PENDING_REFUND => VoidPendingRefundProcessor::class,
+        EventCodes::CHARGEBACK => ChargebackProcessor::class,
+        EventCodes::CHARGEBACK_REVERSED => ChargebackReversedProcessor::class,
+        EventCodes::SECOND_CHARGEBACK => SecondChargebackProcessor::class
     ];
 
 
