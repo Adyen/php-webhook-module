@@ -63,8 +63,8 @@ class ProcessorFactory
      * @throws InvalidDataException
      */
     public static function create(
-        Notification $notification,
-        string $paymentState,
+        Notification    $notification,
+        string          $paymentState,
         LoggerInterface $logger = null
     ): ProcessorInterface {
         /** @var Processor $processor */
