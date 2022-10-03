@@ -44,7 +44,7 @@ class AuthorisationAdjustmentProcessor extends Processor implements ProcessorInt
         }
         $logContext['newState'] = $state;
 
-        $this->log('info', 'Processed ' . EventCodes::AUTHORISATION . ' notification.', $logContext);
+        $this->log('info', 'Processed ' . EventCodes::AUTHORISATION_ADJUSTMENT . ' notification.', $logContext);
 
         return $state;
     }

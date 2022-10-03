@@ -28,6 +28,7 @@ use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
 use Adyen\Webhook\PaymentStates;
+use Adyen\Webhook\Processor\AuthorisationAdjustmentProcessor;
 use Adyen\Webhook\Processor\AuthorisationProcessor;
 use Adyen\Webhook\Processor\AuthorisedProcessor;
 use Adyen\Webhook\Processor\CancellationProcessor;
@@ -35,19 +36,26 @@ use Adyen\Webhook\Processor\CancelledProcessor;
 use Adyen\Webhook\Processor\CancelOrRefundProcessor;
 use Adyen\Webhook\Processor\CapturedFailedProcessor;
 use Adyen\Webhook\Processor\CaptureProcessor;
+use Adyen\Webhook\Processor\ChargebackProcessor;
+use Adyen\Webhook\Processor\ChargebackReversedProcessor;
 use Adyen\Webhook\Processor\HandledExternallyProcessor;
 use Adyen\Webhook\Processor\ManualReviewAcceptProcessor;
 use Adyen\Webhook\Processor\ManualReviewRejectProcessor;
 use Adyen\Webhook\Processor\OfferClosedProcessor;
 use Adyen\Webhook\Processor\OrderClosedProcessor;
+use Adyen\Webhook\Processor\OrderOpenedProcessor;
 use Adyen\Webhook\Processor\PendingProcessor;
 use Adyen\Webhook\Processor\ProcessorFactory;
 use Adyen\Webhook\Processor\RecurringContractProcessor;
+use Adyen\Webhook\Processor\RefundedReversedProcessor;
+use Adyen\Webhook\Processor\RefundedWithDataProcessor;
 use Adyen\Webhook\Processor\RefundFailedProcessor;
 use Adyen\Webhook\Processor\RefundProcessor;
 
 
 use Adyen\Webhook\Processor\ReportAvailableProcessor;
+use Adyen\Webhook\Processor\SecondChargebackProcessor;
+use Adyen\Webhook\Processor\VoidPendingRefundProcessor;
 
 class ProcessorFactoryTest extends TestCase
 {
@@ -73,14 +81,14 @@ class ProcessorFactoryTest extends TestCase
             [EventCodes::REFUND, RefundProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::REFUND_FAILED, RefundFailedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::REPORT_AVAILABLE, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::AUTHORISATION_ADJUSTMENT, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::ORDER_OPENED, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::REFUNDED_REVERSED, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::REFUND_WITH_DATA, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::VOID_PENDING_REFUND, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::CHARGEBACK, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::CHARGEBACK, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::SECOND_CHARGEBACK, ReportAvailableProcessor::class, PaymentStates::STATE_IN_PROGRESS]
+            [EventCodes::AUTHORISATION_ADJUSTMENT, AuthorisationAdjustmentProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::ORDER_OPENED, OrderOpenedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::REFUNDED_REVERSED, RefundedReversedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::REFUND_WITH_DATA, RefundedWithDataProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::VOID_PENDING_REFUND, VoidPendingRefundProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CHARGEBACK, ChargebackProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::CHARGEBACK_REVERSED, ChargebackReversedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::SECOND_CHARGEBACK, SecondChargebackProcessor::class, PaymentStates::STATE_IN_PROGRESS]
         ];
     }
 
@@ -96,7 +104,6 @@ class ProcessorFactoryTest extends TestCase
             ]
         );
         $processor = ProcessorFactory::create($notification, $currentState);
-
         $this->assertInstanceOf($expectedProcessor, $processor);
     }
 
@@ -129,7 +136,7 @@ class ProcessorFactoryTest extends TestCase
     /*
      * Data provider with arguments: event code, original payment state, expected payment state and success
      */
-    public function processorPaymentStatesProvider() : array
+    public function processorPaymentStatesProvider(): array
     {
         return [
             [EventCodes::AUTHORISATION, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
@@ -197,12 +204,11 @@ class ProcessorFactoryTest extends TestCase
     public function testProcessorPaymentStates($eventCode, $originalState, $expectedState, $success)
     {
         $notification = $this->createNotificationSuccess([
-                                                             'eventCode' => $eventCode,
-                                                             'success' => $success,
-                                                         ]);
+            'eventCode' => $eventCode,
+            'success' => $success,
+        ]);
         $processor = ProcessorFactory::create($notification, $originalState);
         $newState = $processor->process();
-
         $this->assertEquals($expectedState, $newState);
     }
 
