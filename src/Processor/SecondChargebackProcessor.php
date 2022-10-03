@@ -32,7 +32,7 @@ class SecondChargebackProcessor extends Processor implements ProcessorInterface
     {
         $state = $this->initialState;
         $logContext = [
-            'eventCode' => EventCodes::CHARGEBACK,
+            'eventCode' => EventCodes::SECOND_CHARGEBACK,
             'originalState' => $state
         ];
 
@@ -44,7 +44,7 @@ class SecondChargebackProcessor extends Processor implements ProcessorInterface
         }
         $logContext['newState'] = $state;
 
-        $this->log('info', 'Processed ' . EventCodes::CHARGEBACK . ' notification.', $logContext);
+        $this->log('info', 'Processed ' . EventCodes::SECOND_CHARGEBACK . ' notification.', $logContext);
 
         return $state;
     }
