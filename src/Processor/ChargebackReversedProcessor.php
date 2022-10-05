@@ -21,17 +21,32 @@
  *
  */
 
-namespace Adyen\Webhook;
+namespace Adyen\Webhook\Processor;
 
-final class PaymentStates
+use Adyen\Webhook\EventCodes;
+use Adyen\Webhook\PaymentStates;
+
+class ChargebackReversedProcessor extends Processor implements ProcessorInterface
 {
-    public const STATE_IN_PROGRESS = 'in_progress';
-    public const STATE_PENDING = 'pending';
-    public const STATE_PAID = 'paid';
-    public const STATE_FAILED = 'failed';
-    public const STATE_REFUNDED = 'refunded';
-    public const STATE_PARTIALLY_REFUNDED = 'partially_refunded';
-    public const STATE_CANCELLED = 'cancelled';
-    public const STATE_NEW = 'new';
-    public const CHARGE_BACK = "charge_back";
+    public function process(): ?string
+    {
+        $state = $this->initialState;
+        $logContext = [
+            'eventCode' => EventCodes::CANCELLATION,
+            'originalState' => $state
+        ];
+
+        if ($this->notification->isSuccess()
+            && ($state === PaymentStates::STATE_NEW
+                || $state === PaymentStates::STATE_PENDING
+                || $state === PaymentStates::STATE_IN_PROGRESS)) {
+            $state = PaymentStates::STATE_CANCELLED;
+        }
+
+        $logContext['newState'] = $state;
+
+        $this->log('info', 'Processed ' . EventCodes::CANCELLATION . ' notification.', $logContext);
+
+        return $state;
+    }
 }
