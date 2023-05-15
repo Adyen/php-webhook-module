@@ -26,25 +26,26 @@ namespace Adyen\Webhook\Processor;
 use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
 
-class AuthorisedProcessor extends Processor implements ProcessorInterface
+class ChargebackReversedProcessor extends Processor implements ProcessorInterface
 {
     public function process(): ?string
     {
         $state = $this->initialState;
         $logContext = [
-            'eventCode' => EventCodes::AUTHORISED,
+            'eventCode' => EventCodes::CANCELLATION,
             'originalState' => $state
         ];
 
-        if ($this->notification->isSuccess() &&
-            (PaymentStates::STATE_NEW === $state
-                || PaymentStates::STATE_IN_PROGRESS === $state
-                || PaymentStates::STATE_PENDING === $state)) {
-            $state = PaymentStates::STATE_PAID;
+        if ($this->notification->isSuccess()
+            && ($state === PaymentStates::STATE_NEW
+                || $state === PaymentStates::STATE_PENDING
+                || $state === PaymentStates::STATE_IN_PROGRESS)) {
+            $state = PaymentStates::STATE_CANCELLED;
         }
+
         $logContext['newState'] = $state;
 
-        $this->log('info', 'Processed ' . EventCodes::AUTHORISED . ' notification.', $logContext);
+        $this->log('info', 'Processed ' . EventCodes::CANCELLATION . ' notification.', $logContext);
 
         return $state;
     }
