@@ -23,12 +23,8 @@
 
 namespace Adyen\Webhook\Processor;
 
-use Adyen\Service\ResourceModel\Modification\CancelOrRefund;
-use Adyen\Service\ResourceModel\Modification\Capture;
 use Adyen\Webhook\EventCodes;
-use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
-use Psr\Log\LoggerInterface;
 
 class ProcessorFactory
 {
@@ -58,23 +54,19 @@ class ProcessorFactory
         EventCodes::SECOND_CHARGEBACK => SecondChargebackProcessor::class
     ];
 
-
     /**
-     * @throws InvalidDataException
+     * @param Notification $notification
+     * @param string $paymentState
+     * @return ProcessorInterface
      */
     public static function create(
         Notification    $notification,
-        string          $paymentState,
-        LoggerInterface $logger = null
+        string          $paymentState
     ): ProcessorInterface {
         /** @var Processor $processor */
         $processor = array_key_exists($notification->getEventCode(), self::$adyenEventCodeProcessors)
             ? new self::$adyenEventCodeProcessors[$notification->getEventCode()]($notification, $paymentState)
             : new DefaultProcessor($notification, $paymentState);
-
-        if ($logger) {
-            $processor->setLogger($logger);
-        }
 
         return $processor;
     }

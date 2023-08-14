@@ -23,7 +23,6 @@
 
 namespace Adyen\Webhook\Processor;
 
-use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
 
 class OrderClosedProcessor extends Processor implements ProcessorInterface
@@ -31,10 +30,6 @@ class OrderClosedProcessor extends Processor implements ProcessorInterface
     public function process(): ?string
     {
         $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::ORDER_CLOSED,
-            'originalState' => $state
-        ];
 
         if ($this->notification->isSuccess()) {
             if (PaymentStates::STATE_NEW === $state
@@ -52,10 +47,6 @@ class OrderClosedProcessor extends Processor implements ProcessorInterface
                 $state = PaymentStates::STATE_REFUNDED;
             }
         }
-
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::ORDER_CLOSED . ' notification.', $logContext);
 
         return $state;
     }
