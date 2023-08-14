@@ -23,7 +23,6 @@
 
 namespace Adyen\Webhook\Processor;
 
-use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
 
 class CaptureProcessor extends Processor implements ProcessorInterface
@@ -31,10 +30,6 @@ class CaptureProcessor extends Processor implements ProcessorInterface
     public function process(): ?string
     {
         $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::CAPTURE,
-            'originalState' => $state
-        ];
 
         if ($this->notification->isSuccess() &&
             (PaymentStates::STATE_NEW === $state
@@ -42,9 +37,6 @@ class CaptureProcessor extends Processor implements ProcessorInterface
                 || PaymentStates::STATE_PENDING === $state)) {
             $state = PaymentStates::STATE_PAID;
         }
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::CAPTURE . ' notification.', $logContext);
 
         return $state;
     }

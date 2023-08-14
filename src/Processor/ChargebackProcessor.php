@@ -23,7 +23,6 @@
 
 namespace Adyen\Webhook\Processor;
 
-use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
 
 class ChargebackProcessor extends Processor implements ProcessorInterface
@@ -31,10 +30,6 @@ class ChargebackProcessor extends Processor implements ProcessorInterface
     public function process(): ?string
     {
         $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::CHARGEBACK,
-            'originalState' => $state
-        ];
 
         if (in_array(
             $state,
@@ -42,9 +37,6 @@ class ChargebackProcessor extends Processor implements ProcessorInterface
         )) {
             $state = $this->notification->isSuccess() ? PaymentStates::CHARGE_BACK : PaymentStates::STATE_FAILED;
         }
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::CHARGEBACK . ' notification.', $logContext);
 
         return $state;
     }

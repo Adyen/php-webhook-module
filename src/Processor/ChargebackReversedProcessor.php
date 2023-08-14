@@ -23,7 +23,6 @@
 
 namespace Adyen\Webhook\Processor;
 
-use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
 
 class ChargebackReversedProcessor extends Processor implements ProcessorInterface
@@ -31,10 +30,6 @@ class ChargebackReversedProcessor extends Processor implements ProcessorInterfac
     public function process(): ?string
     {
         $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::CANCELLATION,
-            'originalState' => $state
-        ];
 
         if ($this->notification->isSuccess()
             && ($state === PaymentStates::STATE_NEW
@@ -42,10 +37,6 @@ class ChargebackReversedProcessor extends Processor implements ProcessorInterfac
                 || $state === PaymentStates::STATE_IN_PROGRESS)) {
             $state = PaymentStates::STATE_CANCELLED;
         }
-
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::CANCELLATION . ' notification.', $logContext);
 
         return $state;
     }
