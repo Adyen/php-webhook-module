@@ -63,11 +63,8 @@ class ProcessorFactory
         Notification    $notification,
         string          $paymentState
     ): ProcessorInterface {
-        /** @var Processor $processor */
-        $processor = array_key_exists($notification->getEventCode(), self::$adyenEventCodeProcessors)
+        return array_key_exists($notification->getEventCode(), self::$adyenEventCodeProcessors)
             ? new self::$adyenEventCodeProcessors[$notification->getEventCode()]($notification, $paymentState)
             : new DefaultProcessor($notification, $paymentState);
-
-        return $processor;
     }
 }
