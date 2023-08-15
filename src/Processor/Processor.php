@@ -26,12 +26,9 @@ namespace Adyen\Webhook\Processor;
 use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
 use Adyen\Webhook\PaymentStates;
-use Psr\Log\LoggerAwareTrait;
 
 abstract class Processor implements ProcessorInterface
 {
-    use LoggerAwareTrait;
-
     /**
      * @var Notification
      */
@@ -44,6 +41,11 @@ abstract class Processor implements ProcessorInterface
 
     abstract public function process(): ?string;
 
+    /**
+     * @param Notification $notification
+     * @param string $state
+     * @throws InvalidDataException
+     */
     public function __construct(Notification $notification, string $state)
     {
         $this->notification = $notification;
@@ -52,18 +54,13 @@ abstract class Processor implements ProcessorInterface
         $this->initialState = $state;
     }
 
-    protected function log($level, $message, array $context = [])
-    {
-        if ($this->logger) {
-            $this->logger->log($level, $message, $context);
-        }
-    }
-
+    /**
+     * @throws InvalidDataException
+     */
     protected function validateState($state)
     {
         $paymentStatesClass = new \ReflectionClass(PaymentStates::class);
         if (!in_array($state, $paymentStatesClass->getConstants())) {
-            $this->log('error', 'Attempted to set an invalid state.', ['state' => $state]);
             throw new InvalidDataException('Invalid state.');
         }
     }
@@ -71,21 +68,10 @@ abstract class Processor implements ProcessorInterface
     /**
      * In case of unchanged payment state based on notification log
      * the eventCode, originalState and newState
-     * @param string $eventCode
      * @return string
      */
-    protected function unchanged(string $eventCode): string
+    protected function unchanged(): string
     {
-        $state = $this->initialState;
-        $this->log(
-            'info',
-            'Processed ' . $eventCode . ' notification.',
-            [
-                'eventCode' => $eventCode,
-                'originalState' => $state,
-                'newState' => $state
-            ]
-        );
-        return $state;
+        return $this->initialState;
     }
 }

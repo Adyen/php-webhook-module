@@ -23,7 +23,6 @@
 
 namespace Adyen\Webhook\Processor;
 
-use Adyen\Webhook\EventCodes;
 use Adyen\Webhook\PaymentStates;
 
 class AuthorisationAdjustmentProcessor extends Processor implements ProcessorInterface
@@ -31,10 +30,6 @@ class AuthorisationAdjustmentProcessor extends Processor implements ProcessorInt
     public function process(): ?string
     {
         $state = $this->initialState;
-        $logContext = [
-            'eventCode' => EventCodes::AUTHORISATION_ADJUSTMENT,
-            'originalState' => $state
-        ];
 
         if (in_array(
             $state,
@@ -42,9 +37,6 @@ class AuthorisationAdjustmentProcessor extends Processor implements ProcessorInt
         )) {
             $state = $this->notification->isSuccess() ? PaymentStates::STATE_PAID : PaymentStates::STATE_FAILED;
         }
-        $logContext['newState'] = $state;
-
-        $this->log('info', 'Processed ' . EventCodes::AUTHORISATION_ADJUSTMENT . ' notification.', $logContext);
 
         return $state;
     }
