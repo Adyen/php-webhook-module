@@ -63,6 +63,11 @@ class Notification
         return $this->eventCode;
     }
 
+    public function getAdditionalData(): array
+    {
+        return $this->additionalData;
+    }
+
     public function isSuccess(): bool
     {
         return in_array($this->success, [true, "true"], true);

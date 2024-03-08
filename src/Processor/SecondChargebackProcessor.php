@@ -23,21 +23,7 @@
 
 namespace Adyen\Webhook\Processor;
 
-use Adyen\Webhook\PaymentStates;
-
-class SecondChargebackProcessor extends Processor implements ProcessorInterface
+class SecondChargebackProcessor extends AbstractDisputeNotificationProcessor implements ProcessorInterface
 {
-    public function process(): ?string
-    {
-        $state = $this->initialState;
 
-        if (in_array(
-            $state,
-            [PaymentStates::STATE_NEW, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PENDING]
-        )) {
-            $state = $this->notification->isSuccess() ? PaymentStates::CHARGE_BACK : PaymentStates::STATE_FAILED;
-        }
-
-        return $state;
-    }
 }
