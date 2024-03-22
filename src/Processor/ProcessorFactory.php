@@ -24,11 +24,12 @@
 namespace Adyen\Webhook\Processor;
 
 use Adyen\Webhook\EventCodes;
+use Adyen\Webhook\Exception\InvalidDataException;
 use Adyen\Webhook\Notification;
 
 class ProcessorFactory
 {
-    private static $adyenEventCodeProcessors = [
+    private static array $adyenEventCodeProcessors = [
         EventCodes::AUTHORISATION => AuthorisationProcessor::class,
         EventCodes::OFFER_CLOSED => OfferClosedProcessor::class,
         EventCodes::REFUND => RefundProcessor::class,
@@ -57,14 +58,21 @@ class ProcessorFactory
     /**
      * @param Notification $notification
      * @param string $paymentState
+     * @param bool $isAutoCapture
      * @return ProcessorInterface
+     * @throws InvalidDataException
      */
     public static function create(
         Notification    $notification,
-        string          $paymentState
+        string          $paymentState,
+        bool            $isAutoCapture = true
     ): ProcessorInterface {
         return array_key_exists($notification->getEventCode(), self::$adyenEventCodeProcessors)
-            ? new self::$adyenEventCodeProcessors[$notification->getEventCode()]($notification, $paymentState)
-            : new DefaultProcessor($notification, $paymentState);
+            ? new self::$adyenEventCodeProcessors[$notification->getEventCode()](
+                $notification,
+                $paymentState,
+                $isAutoCapture
+            )
+            : new DefaultProcessor($notification, $paymentState, $isAutoCapture);
     }
 }

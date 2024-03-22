@@ -39,16 +39,26 @@ abstract class Processor implements ProcessorInterface
      */
     protected $initialState;
 
+    /**
+     * @var bool
+     */
+    protected $isAutoCapture;
+
     abstract public function process(): ?string;
 
     /**
      * @param Notification $notification
      * @param string $state
+     * @param bool $isAutoCapture
      * @throws InvalidDataException
      */
-    public function __construct(Notification $notification, string $state)
-    {
+    public function __construct(
+        Notification $notification,
+        string $state,
+        bool $isAutoCapture = true
+    ) {
         $this->notification = $notification;
+        $this->isAutoCapture = $isAutoCapture;
         $this->validateState($state);
 
         $this->initialState = $state;
