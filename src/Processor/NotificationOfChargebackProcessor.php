@@ -23,13 +23,11 @@
 
 namespace Adyen\Webhook\Processor;
 
-
 class NotificationOfChargebackProcessor extends AbstractDisputeNotificationProcessor implements ProcessorInterface
 {
     public function process(): ?string
     {
         return $this->unchanged();
     }
-
-
+    
 }
