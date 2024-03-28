@@ -65,7 +65,7 @@ class Notification
 
     public function getAdditionalData(): array
     {
-        return $this->additionalData;
+        return $this->additionalData ?? [];
     }
 
     public function isSuccess(): bool

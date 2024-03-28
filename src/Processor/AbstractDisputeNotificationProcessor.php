@@ -46,7 +46,7 @@ abstract class AbstractDisputeNotificationProcessor extends Processor implements
     public function process(): ?string
     {
         $state = $this->initialState;
-        $additionalData = $this->notification->getAdditionalData() ?? [];
+        $additionalData = $this->notification->getAdditionalData();
         $disputeStatus = $additionalData[self::DISPUTE_STATUS] ?? null;
 
         if ($this->notification->isSuccess() &&
