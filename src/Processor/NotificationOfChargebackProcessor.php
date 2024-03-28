@@ -29,5 +29,4 @@ class NotificationOfChargebackProcessor extends AbstractDisputeNotificationProce
     {
         return $this->unchanged();
     }
-    
 }
