@@ -188,13 +188,15 @@ class ProcessorFactoryTest extends TestCase
             [EventCodes::CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS, 'true'],
             [EventCodes::CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
             [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'true'],
-            [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS, 'true'],
+            [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS,
+                'true'],
             [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
             [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'true'],
             [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS, 'true'],
             [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
             [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'false'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS, 'false'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS,
+                'false'],
             [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'false']
         ];
     }
