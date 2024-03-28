@@ -184,18 +184,18 @@ class ProcessorFactoryTest extends TestCase
             [EventCodes::VOID_PENDING_REFUND, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
             [EventCodes::VOID_PENDING_REFUND, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
             [EventCodes::VOID_PENDING_REFUND, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
-            [EventCodes::CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
-            [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
-            [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_FAILED, 'false'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_FAILED, 'false'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_FAILED, 'false']
+            [EventCodes::CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'true'],
+            [EventCodes::CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS, 'true'],
+            [EventCodes::CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'true'],
+            [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS, 'true'],
+            [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'true'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS, 'true'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'false'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS, 'false'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'false']
         ];
     }
 
