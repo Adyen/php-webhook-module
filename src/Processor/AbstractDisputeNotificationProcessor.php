@@ -36,8 +36,6 @@ abstract class AbstractDisputeNotificationProcessor extends Processor implements
         self::DISPUTE_STATUS_UNDEFENDED
     ];
     const DISPUTE_STATUS = "disputeStatus";
-
-
     const CHARGEBACK_ORDER_STATES = [
         PaymentStates::STATE_PAID,
         PaymentStates::STATE_IN_PROGRESS,
