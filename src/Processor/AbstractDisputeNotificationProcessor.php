@@ -38,7 +38,7 @@ abstract class AbstractDisputeNotificationProcessor extends Processor implements
     const DISPUTE_STATUS = "disputeStatus";
 
 
-    const ORDER_ARRAY = [
+    const CHARGEBACK_ORDER_STATES = [
         PaymentStates::STATE_PAID,
         PaymentStates::STATE_IN_PROGRESS,
     ];
@@ -51,11 +51,9 @@ abstract class AbstractDisputeNotificationProcessor extends Processor implements
 
         if ($this->notification->isSuccess() &&
             isset($disputeStatus) &&
-            in_array($disputeStatus, self::FINAL_DISPUTE_STATUSES)) {
-            //State should be In Progress or paid in cases where we want to change it to refunded.
-            if (in_array($state, self::ORDER_ARRAY)) {
-                $state = PaymentStates::STATE_REFUNDED;
-            }
+            in_array($disputeStatus, self::FINAL_DISPUTE_STATUSES) &&
+            in_array($state, self::CHARGEBACK_ORDER_STATES)) {
+            $state = PaymentStates::STATE_REFUNDED;
         }
 
         return $state;
