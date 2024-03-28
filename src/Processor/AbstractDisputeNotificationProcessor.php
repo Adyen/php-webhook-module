@@ -25,8 +25,6 @@ namespace Adyen\Webhook\Processor;
 
 use Adyen\Webhook\PaymentStates;
 
-
-
 abstract class AbstractDisputeNotificationProcessor extends Processor implements ProcessorInterface
 {
     const DISPUTE_STATUS_UNDEFENDED = "Undefended";
