@@ -52,7 +52,9 @@ class ProcessorFactory
         EventCodes::VOID_PENDING_REFUND => VoidPendingRefundProcessor::class,
         EventCodes::CHARGEBACK => ChargebackProcessor::class,
         EventCodes::CHARGEBACK_REVERSED => ChargebackReversedProcessor::class,
-        EventCodes::SECOND_CHARGEBACK => SecondChargebackProcessor::class
+        EventCodes::SECOND_CHARGEBACK => SecondChargebackProcessor::class,
+        EventCodes::NOTIFICATION_OF_CHARGEBACK => NotificationOfChargebackProcessor::class,
+        EventCodes::REQUEST_FOR_INFORMATION => RequestForInformationProcessor::class
     ];
 
     /**
