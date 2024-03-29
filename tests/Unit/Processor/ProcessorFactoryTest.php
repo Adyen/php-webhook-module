@@ -141,6 +141,8 @@ class ProcessorFactoryTest extends TestCase
     {
         return [
             [EventCodes::AUTHORISATION, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISATION, PaymentStates::STATE_NEW, PaymentStates::STATE_FAILED, 'false'],
+            [EventCodes::AUTHORISATION, PaymentStates::STATE_NEW, PaymentStates::STATE_AUTHORIZED, 'true', false],
             [EventCodes::AUTHORISATION, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
             [EventCodes::AUTHORISATION, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
             [EventCodes::CANCELLATION, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
@@ -202,13 +204,18 @@ class ProcessorFactoryTest extends TestCase
     /**
      * @dataProvider processorPaymentStatesProvider
      */
-    public function testProcessorPaymentStates($eventCode, $originalState, $expectedState, $success)
-    {
+    public function testProcessorPaymentStates(
+        $eventCode,
+        $originalState,
+        $expectedState,
+        $success,
+        $isAutoCapture = true
+    ) {
         $notification = $this->createNotificationSuccess([
             'eventCode' => $eventCode,
             'success' => $success,
         ]);
-        $processor = ProcessorFactory::create($notification, $originalState);
+        $processor = ProcessorFactory::create($notification, $originalState, $isAutoCapture);
         $newState = $processor->process();
         $this->assertEquals($expectedState, $newState);
     }
