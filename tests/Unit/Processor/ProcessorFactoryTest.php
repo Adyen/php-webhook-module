@@ -51,8 +51,6 @@ use Adyen\Webhook\Processor\RefundedReversedProcessor;
 use Adyen\Webhook\Processor\RefundedWithDataProcessor;
 use Adyen\Webhook\Processor\RefundFailedProcessor;
 use Adyen\Webhook\Processor\RefundProcessor;
-
-
 use Adyen\Webhook\Processor\ReportAvailableProcessor;
 use Adyen\Webhook\Processor\SecondChargebackProcessor;
 use Adyen\Webhook\Processor\VoidPendingRefundProcessor;
