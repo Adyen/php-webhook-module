@@ -209,7 +209,8 @@ class ProcessorFactoryTest extends TestCase
             [EventCodes::RECURRING_TOKEN_CREATED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
             [EventCodes::RECURRING_TOKEN_UPDATED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
             [EventCodes::RECURRING_TOKEN_DISABLED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
-            [EventCodes::RECURRING_TOKEN_ALREADY_EXISTING, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::RECURRING_TOKEN_ALREADY_EXISTING, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING,
+                'true'],
         ];
     }
 
