@@ -51,8 +51,6 @@ use Adyen\Webhook\Processor\RefundedReversedProcessor;
 use Adyen\Webhook\Processor\RefundedWithDataProcessor;
 use Adyen\Webhook\Processor\RefundFailedProcessor;
 use Adyen\Webhook\Processor\RefundProcessor;
-
-
 use Adyen\Webhook\Processor\ReportAvailableProcessor;
 use Adyen\Webhook\Processor\SecondChargebackProcessor;
 use Adyen\Webhook\Processor\VoidPendingRefundProcessor;
@@ -141,6 +139,8 @@ class ProcessorFactoryTest extends TestCase
     {
         return [
             [EventCodes::AUTHORISATION, PaymentStates::STATE_NEW, PaymentStates::STATE_PAID, 'true'],
+            [EventCodes::AUTHORISATION, PaymentStates::STATE_NEW, PaymentStates::STATE_FAILED, 'false'],
+            [EventCodes::AUTHORISATION, PaymentStates::STATE_NEW, PaymentStates::STATE_AUTHORIZED, 'true', false],
             [EventCodes::AUTHORISATION, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_PAID, 'true'],
             [EventCodes::AUTHORISATION, PaymentStates::STATE_PENDING, PaymentStates::STATE_PAID, 'true'],
             [EventCodes::CANCELLATION, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
@@ -184,31 +184,38 @@ class ProcessorFactoryTest extends TestCase
             [EventCodes::VOID_PENDING_REFUND, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
             [EventCodes::VOID_PENDING_REFUND, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
             [EventCodes::VOID_PENDING_REFUND, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
-            [EventCodes::CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::CHARGE_BACK, 'true'],
+            [EventCodes::CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'true'],
+            [EventCodes::CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS, 'true'],
+            [EventCodes::CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
             [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_NEW, PaymentStates::STATE_CANCELLED, 'true'],
-            [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED, 'true'],
+            [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_CANCELLED,
+                'true'],
             [EventCodes::CHARGEBACK_REVERSED, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::CHARGE_BACK, 'true'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_FAILED, 'false'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_FAILED, 'false'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_FAILED, 'false']
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'true'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS, 'true'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'false'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS,
+                'false'],
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'false']
         ];
     }
 
     /**
      * @dataProvider processorPaymentStatesProvider
      */
-    public function testProcessorPaymentStates($eventCode, $originalState, $expectedState, $success)
-    {
+    public function testProcessorPaymentStates(
+        $eventCode,
+        $originalState,
+        $expectedState,
+        $success,
+        $isAutoCapture = true
+    ) {
         $notification = $this->createNotificationSuccess([
             'eventCode' => $eventCode,
             'success' => $success,
         ]);
-        $processor = ProcessorFactory::create($notification, $originalState);
+        $processor = ProcessorFactory::create($notification, $originalState, $isAutoCapture);
         $newState = $processor->process();
         $this->assertEquals($expectedState, $newState);
     }

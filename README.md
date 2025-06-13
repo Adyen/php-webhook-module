@@ -1,4 +1,4 @@
-# Webhook Module for PHP (Beta)
+# Webhook Module for PHP 
 
 Adyen library for handling notification webhooks.
 
