@@ -36,6 +36,11 @@ final class EventCodes
     const HANDLED_EXTERNALLY = 'HANDLED_EXTERNALLY';
     const MANUAL_REVIEW_ACCEPT = 'MANUAL_REVIEW_ACCEPT';
     const MANUAL_REVIEW_REJECT = 'MANUAL_REVIEW_REJECT';
+    /**
+     * @deprecated `RECURRING_CONTRACT` webhook event has been deprecated and will be removed eventually.
+     * You can start using tokenization webhooks. Please visit the following link for further information.
+     * https://docs.adyen.com/api-explorer/Tokenization-webhooks/1/overview
+     */
     const RECURRING_CONTRACT = "RECURRING_CONTRACT";
     const REPORT_AVAILABLE = "REPORT_AVAILABLE";
     const ORDER_CLOSED = "ORDER_CLOSED";
@@ -50,4 +55,9 @@ final class EventCodes
     const SECOND_CHARGEBACK = "SECOND_CHARGEBACK";
     const NOTIFICATION_OF_CHARGEBACK = "NOTIFICATION_OF_CHARGEBACK";
     const REQUEST_FOR_INFORMATION = "REQUEST_FOR_INFORMATION";
+    const EXPIRE = "EXPIRE";
+    const RECURRING_TOKEN_CREATED = "recurring.token.created";
+    const RECURRING_TOKEN_UPDATED = "recurring.token.updated";
+    const RECURRING_TOKEN_DISABLED = "recurring.token.disabled";
+    const RECURRING_TOKEN_ALREADY_EXISTING = "recurring.token.alreadyExisting";
 }

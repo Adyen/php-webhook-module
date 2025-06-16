@@ -54,7 +54,12 @@ class ProcessorFactory
         EventCodes::CHARGEBACK_REVERSED => ChargebackReversedProcessor::class,
         EventCodes::SECOND_CHARGEBACK => SecondChargebackProcessor::class,
         EventCodes::NOTIFICATION_OF_CHARGEBACK => NotificationOfChargebackProcessor::class,
-        EventCodes::REQUEST_FOR_INFORMATION => RequestForInformationProcessor::class
+        EventCodes::REQUEST_FOR_INFORMATION => RequestForInformationProcessor::class,
+        EventCodes::EXPIRE => ExpireProcessor::class,
+        EventCodes::RECURRING_TOKEN_CREATED => TokenLifecycleEventProcessor::class,
+        EventCodes::RECURRING_TOKEN_UPDATED => TokenLifecycleEventProcessor::class,
+        EventCodes::RECURRING_TOKEN_DISABLED => TokenLifecycleEventProcessor::class,
+        EventCodes::RECURRING_TOKEN_ALREADY_EXISTING => TokenLifecycleEventProcessor::class
     ];
 
     /**
