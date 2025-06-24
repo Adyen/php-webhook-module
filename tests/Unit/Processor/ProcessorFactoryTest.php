@@ -30,14 +30,13 @@ use Adyen\Webhook\Notification;
 use Adyen\Webhook\PaymentStates;
 use Adyen\Webhook\Processor\AuthorisationAdjustmentProcessor;
 use Adyen\Webhook\Processor\AuthorisationProcessor;
-use Adyen\Webhook\Processor\AuthorisedProcessor;
 use Adyen\Webhook\Processor\CancellationProcessor;
-use Adyen\Webhook\Processor\CancelledProcessor;
 use Adyen\Webhook\Processor\CancelOrRefundProcessor;
 use Adyen\Webhook\Processor\CapturedFailedProcessor;
 use Adyen\Webhook\Processor\CaptureProcessor;
 use Adyen\Webhook\Processor\ChargebackProcessor;
 use Adyen\Webhook\Processor\ChargebackReversedProcessor;
+use Adyen\Webhook\Processor\ExpireProcessor;
 use Adyen\Webhook\Processor\HandledExternallyProcessor;
 use Adyen\Webhook\Processor\ManualReviewAcceptProcessor;
 use Adyen\Webhook\Processor\ManualReviewRejectProcessor;
@@ -53,6 +52,7 @@ use Adyen\Webhook\Processor\RefundFailedProcessor;
 use Adyen\Webhook\Processor\RefundProcessor;
 use Adyen\Webhook\Processor\ReportAvailableProcessor;
 use Adyen\Webhook\Processor\SecondChargebackProcessor;
+use Adyen\Webhook\Processor\TokenLifecycleEventProcessor;
 use Adyen\Webhook\Processor\VoidPendingRefundProcessor;
 
 class ProcessorFactoryTest extends TestCase
@@ -87,7 +87,13 @@ class ProcessorFactoryTest extends TestCase
             [EventCodes::VOID_PENDING_REFUND, VoidPendingRefundProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::CHARGEBACK, ChargebackProcessor::class, PaymentStates::STATE_IN_PROGRESS],
             [EventCodes::CHARGEBACK_REVERSED, ChargebackReversedProcessor::class, PaymentStates::STATE_IN_PROGRESS],
-            [EventCodes::SECOND_CHARGEBACK, SecondChargebackProcessor::class, PaymentStates::STATE_IN_PROGRESS]
+            [EventCodes::SECOND_CHARGEBACK, SecondChargebackProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::EXPIRE, ExpireProcessor::class, PaymentStates::STATE_IN_PROGRESS],
+            [EventCodes::RECURRING_TOKEN_CREATED, TokenLifecycleEventProcessor::class, PaymentStates::STATE_PAID],
+            [EventCodes::RECURRING_TOKEN_UPDATED, TokenLifecycleEventProcessor::class, PaymentStates::STATE_PAID],
+            [EventCodes::RECURRING_TOKEN_DISABLED, TokenLifecycleEventProcessor::class, PaymentStates::STATE_PAID],
+            [EventCodes::RECURRING_TOKEN_ALREADY_EXISTING, TokenLifecycleEventProcessor::class,
+                PaymentStates::STATE_PAID]
         ];
     }
 
@@ -197,7 +203,14 @@ class ProcessorFactoryTest extends TestCase
             [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_NEW, PaymentStates::STATE_NEW, 'false'],
             [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_IN_PROGRESS, PaymentStates::STATE_IN_PROGRESS,
                 'false'],
-            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'false']
+            [EventCodes::SECOND_CHARGEBACK, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'false'],
+            [EventCodes::EXPIRE, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true', true],
+            [EventCodes::EXPIRE, PaymentStates::STATE_PENDING, PaymentStates::STATE_CANCELLED, 'true', false],
+            [EventCodes::RECURRING_TOKEN_CREATED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::RECURRING_TOKEN_UPDATED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::RECURRING_TOKEN_DISABLED, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING, 'true'],
+            [EventCodes::RECURRING_TOKEN_ALREADY_EXISTING, PaymentStates::STATE_PENDING, PaymentStates::STATE_PENDING,
+                'true'],
         ];
     }
 
