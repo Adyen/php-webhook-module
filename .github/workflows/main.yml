@@ -5,6 +5,11 @@ jobs:
   run:
     name: Run
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ["7.4","8.4"]
+
     permissions:
       contents: read
 
@@ -12,7 +17,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: ${{ matrix.php-version }}
 
       - name: Checkout
         uses: actions/checkout@v2
