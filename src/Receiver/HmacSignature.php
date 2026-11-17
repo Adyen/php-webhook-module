@@ -100,10 +100,13 @@ class HmacSignature
             throw new InvalidDataException("You did not provide hmacSignature in additionalData");
         }
         $merchantSign = $params["additionalData"]["hmacSignature"];
+        if (!is_string($merchantSign)) {
+            return false;
+        }
         unset($params["additionalData"]);
         $expectedSign = $this->calculateNotificationHMAC($hmacKey, $params);
 
-        return $expectedSign == $merchantSign;
+        return hash_equals($expectedSign, $merchantSign);
     }
     /**
      * Returns true when the event code support HMAC validation
